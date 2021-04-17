@@ -22,6 +22,11 @@ export default createGlobalStyle`
         --color-gray-light: ${({ theme }) => theme.colors.grayLight};
         --color-text: ${({ theme }) => theme.colors.text};
     }
+
+    body {
+        font-family: 'Source Sans Pro';
+        font-weight: 400;
+    }
     
     a, 
     input, 
@@ -30,5 +35,19 @@ export default createGlobalStyle`
         outline: none;
         text-decoration: none;
         font-family: inherit;
+    }
+
+    button {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        background-color: #5c45ff;
+        color: white;
+
+        cursor: pointer;
+
+        border: none;
+        border-radius: 5px;
+
     }
 `;
