@@ -1,41 +1,93 @@
 import styled from "styled-components";
+import { BiCheck } from "react-icons/bi";
+import { AiOutlineTwitter } from "react-icons/ai";
 
-import { BsArrowRightShort } from "react-icons/bs";
-
-const OfferCard = () => {
+const OfferCard = ({ user, domain }) => {
   return (
-    <Background>
-      <div className="user-info">
-        <img
-          src="https://avatars.githubusercontent.com/u/20131547?v=4"
-          alt="User profile image"
-        />
-        <p>Sebastian Crossa wants to trade</p>
-      </div>
-
-      <div className="domain">
-        <p>potentialfor.business</p>
-
-        {/* <div class="icon">
-          <AiOutlineSwap size={25} />
-        </div> */}
-      </div>
-
-      <div class="trade-info">
-        <p>
-          <span>8</span> swap offers
-        </p>
-        <button>
-          <p>Check out offers</p>
-          <BsArrowRightShort size={25} />
+    <Container>
+      <Background>
+        <div className="user-info">
+          <img
+            src="https://avatars.githubusercontent.com/u/20131547?v=4"
+            alt="User profile image"
+          />
+          <p>
+            {user} wants to swap this domain for{" "}
+            <span
+              style={{
+                padding: "0.5rem",
+                backgroundColor: "white",
+                borderRadius: "5px",
+                marginLeft: "0.5rem",
+              }}
+            >
+              {domain}
+            </span>
+          </p>
+        </div>
+      </Background>
+      {/* only display this if the user is the one who initiated the swap */}
+      <div className="action-list">
+        <button className="contact">
+          <AiOutlineTwitter
+            size={25}
+            style={{ stroke: "white", marginRight: "0.5rem" }}
+          />
+          <p>Send a DM</p>
+        </button>
+        <button className="success">
+          <BiCheck
+            size={25}
+            style={{ stroke: "white", marginRight: "0.5rem" }}
+          />
+          <p>Succefully swapped</p>
         </button>
       </div>
-    </Background>
+    </Container>
   );
 };
 
+const Container = styled.div`
+  display: grid;
+
+  justify-content: space-between;
+
+  margin: 0 auto;
+
+  .action-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 0.5rem;
+
+    button {
+      padding: 0.5rem;
+      color: white;
+    }
+  }
+
+  .contact,
+  .success {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .contact {
+    background-color: #2c9cea;
+  }
+
+  .success {
+    background-color: #43ccb5;
+  }
+`;
+
 const Background = styled.div`
-  border-radius: 5px;
+  background-color: #f9f8f4;
+  padding: 1rem;
+  border-radius: 10px;
+
+  width: 35rem;
+  margin: 0 auto 0.5rem auto;
 
   img {
     width: 2rem;
@@ -50,57 +102,6 @@ const Background = styled.div`
 
     font-size: 1.1rem;
     font-weight: 600;
-
-    margin: 0 auto 0.5rem auto;
-
-    margin-bottom: 0.5rem;
-  }
-
-  .domain {
-    background-color: #f9f8f4;
-    padding: 2rem;
-
-    margin-bottom: 1rem;
-
-    text-align: center;
-    font-size: 1.2rem;
-
-    border-radius: 5px;
-  }
-
-  .trade-info {
-    display: grid;
-    grid-template-columns: 0.8fr 1fr;
-    grid-gap: 0.5rem;
-
-    align-items: center;
-
-    button {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.6rem;
-
-      text-align: center;
-    }
-
-    span {
-      width: 2rem;
-      height: auto;
-      margin-right: 0.3rem;
-      background-color: #f9f8f4;
-      font-weight: 600;
-      padding: 0.3rem 0.7rem;
-      border-radius: 10rem;
-    }
-  }
-
-  .icon {
-    padding: 0.5rem;
-    background: white;
-    width: fit-content;
-    margin: 0 auto;
-    border-radius: 50rem;
   }
 `;
 

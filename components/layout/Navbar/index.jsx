@@ -1,9 +1,14 @@
+import Link from "next/link";
 import styled from "styled-components";
 
 const Navbar = () => {
   return (
     <Background>
-      <h1>tradedomainswithme</h1>
+      <Link href="/" passHref>
+        <a style={{ color: "black" }}>
+          <h1>tradedomainswithme</h1>
+        </a>
+      </Link>
 
       <div className="user-info">
         <img

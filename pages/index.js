@@ -2,7 +2,7 @@ import Head from "next/head";
 import styled from "styled-components";
 import { Container } from "../styles";
 import Navbar from "../components/layout/Navbar";
-import OffersList from "../components/containers/OffersList";
+import SwapsList from "../components/containers/SwapsList";
 
 export default function Home() {
   return (
@@ -22,7 +22,7 @@ export default function Home() {
           <button>Start trading for free</button>
         </section>
 
-        <OffersList />
+        <SwapsList />
       </StyledContainer>
     </>
   );
