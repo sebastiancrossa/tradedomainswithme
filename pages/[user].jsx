@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { Container } from "../styles";
 import Navbar from "../components/layout/Navbar";
 import TradeCard from "../components/ui/TradeCard";
+import SwappedCard from "../components/ui/SwappedCard";
 
 const User = () => {
   const router = useRouter();
@@ -36,13 +37,21 @@ const User = () => {
         </div>
 
         <section>
-          <h2 style={{ marginBottom: "1rem" }}>
-            Open swap offers from this user
-          </h2>
+          <h2>Open swap offers from this user</h2>
 
           <div className="offers-list">
             <TradeCard />
             <TradeCard />
+          </div>
+        </section>
+
+        <section>
+          <h2>Succesful swaps</h2>
+
+          <div className="swapped-list">
+            <SwappedCard />
+            <SwappedCard />
+            <SwappedCard />
           </div>
         </section>
       </StyledContainer>
@@ -60,6 +69,14 @@ const StyledContainer = styled(Container)`
       height: auto;
       border-radius: 50rem;
 
+      margin-bottom: 1rem;
+    }
+  }
+
+  section {
+    margin-bottom: 2rem;
+
+    h2 {
       margin-bottom: 1rem;
     }
   }
@@ -89,7 +106,8 @@ const StyledContainer = styled(Container)`
   }
 
   /* ! Abstract this styling, given that it's more than repeated */
-  .offers-list {
+  .offers-list,
+  .swapped-list {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-gap: 3rem;
