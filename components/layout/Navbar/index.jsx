@@ -1,7 +1,9 @@
 import Link from "next/link";
 import styled from "styled-components";
 
-const Navbar = () => {
+const Navbar = ({ session, signIn }) => {
+  console.log("User session: ", session);
+
   return (
     <Background>
       <Link href="/" passHref>
@@ -9,18 +11,17 @@ const Navbar = () => {
           <h1>tradedomainswithme</h1>
         </a>
       </Link>
-
-      <Link href="/sebastiancrossa" passHref>
-        <a style={{ color: "black" }}>
-          <div className="user-info">
-            <img
-              src="https://avatars.githubusercontent.com/u/20131547?v=4"
-              alt="User profile image"
-            />
-            <p>Sebastian Crossa</p>
-          </div>
-        </a>
-      </Link>
+      {!session && <button onClick={() => signIn()}>Sign in</button>}
+      {session && (
+        <Link href={`/sebastiancrossa`} passHref>
+          <a style={{ color: "black" }}>
+            <div className="user-info">
+              <img src={session.user.image} alt="User profile image" />
+              <p>{session.user.name}</p>
+            </div>
+          </a>
+        </Link>
+      )}
     </Background>
   );
 };

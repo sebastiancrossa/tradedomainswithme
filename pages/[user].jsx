@@ -39,19 +39,19 @@ const User = () => {
           </div>
         </div>
 
+        <button className="add-btn" onClick={onOpenModal}>
+          Add a domain
+        </button>
+
         <div className="user-stats">
           <div class="traded">8 domains swaped</div>
           <div class="open">3 open swap offers</div>
         </div>
 
-        <button className="add-btn" onClick={onOpenModal}>
-          Add a domain
-        </button>
-
         <section>
           <h2 style={{ margin: "0" }}>Verify your domains</h2>
           <p style={{ marginBottom: "1rem" }}>
-            You cans still create swap offers for unverified domains, but it is
+            You can still create swap offers for unverified domains, but it is
             highly recommended to verify each of your submitted domains, since
             it's easier for others to follow through on a swap offer.
           </p>
@@ -61,7 +61,8 @@ const User = () => {
             with the value of{" "}
             <span className="code">tradedomainswithme-[your domain here]</span>
             (e.g. tradedomainswithme-potentialfor.business). Once that is added,
-            keep refreshing until we read that on our side!
+            keep refreshing until we are able to verify that you are the owner
+            of that domain!
           </p>
 
           <div className="unverified-domains">
@@ -201,12 +202,12 @@ const StyledContainer = styled(Container)`
 
   .add-btn {
     width: 30rem;
-    margin: 0 auto 3rem auto;
+    margin: 0 auto 1rem auto;
     display: block;
   }
 
   .user-stats {
-    margin: 0 auto 1rem auto;
+    margin: 0 auto 3rem auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 1rem;

@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import styled from "styled-components";
 
+import ReactModal from "react-modal";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import { Container } from "../../styles";
@@ -10,6 +12,10 @@ import OffersList from "../../components/containers/OffersList";
 
 const Domain = () => {
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const onOpenModal = () => setIsOpen(true);
+  const onCloseModal = () => setIsOpen(false);
 
   return (
     <>
@@ -36,10 +42,11 @@ const Domain = () => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
+              marginBottom: "1rem",
             }}
           >
             <p style={{ marginRight: "0.5rem" }}>a domain owned by</p>
-            <div className="user-info">
+            <div className="user-content">
               <img
                 src="https://avatars.githubusercontent.com/u/20131547?v=4"
                 alt="User profile image"
@@ -47,16 +54,62 @@ const Domain = () => {
               <p>Sebastian Crossa</p>
             </div>
           </div>
+          <button className="close">Close swap offer</button>
         </div>
 
         <MakeAnOffer />
         <OffersList />
 
         <Footer />
+
+        <ReactModal
+          isOpen={isOpen}
+          onRequestClose={onCloseModal}
+          shouldCloseOnOverlayClick
+          shouldCloseOnEsc
+          style={{
+            overlay: {
+              backgroundColor: "rgba(255, 255, 255, 0.7)",
+            },
+            content: {
+              border: "none",
+              boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+              maxWidth: "25rem",
+              margin: "auto auto",
+              height: "fit-content",
+              textAlign: "center",
+            },
+          }}
+        >
+          <ModalContainer>
+            <h2>Are you sure you want to close </h2>
+            <input type="text" placeholder="example.com" />
+            <button>Add my domain</button>
+          </ModalContainer>
+        </ReactModal>
       </StyledContainer>
     </>
   );
 };
+
+const ModalContainer = styled.div`
+  input {
+    padding: 0.5rem;
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid #f9f8f4;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 5px;
+
+    text-align: center;
+  }
+
+  button {
+    width: 100%;
+    padding: 0.5rem;
+  }
+`;
 
 const StyledContainer = styled(Container)`
   img {
@@ -91,7 +144,17 @@ const StyledContainer = styled(Container)`
     font-size: 2.5rem;
   }
 
-  .user-info {
+  .close {
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+
+    color: #ec6559;
+    border: 2px solid #ec6559;
+    background: none;
+    /* border-radius: 50rem; */
+  }
+
+  .user-content {
     display: flex;
     align-items: center;
   }

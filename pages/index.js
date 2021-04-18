@@ -1,3 +1,4 @@
+import { signIn, signOut, useSession } from "next-auth/client";
 import { useState } from "react";
 import Head from "next/head";
 import ReactModal from "react-modal";
@@ -10,6 +11,7 @@ import Footer from "../components/layout/Footer";
 import SwapsList from "../components/containers/SwapsList";
 
 export default function Home() {
+  const [session, loading] = useSession();
   const [isOpen, setIsOpen] = useState(false);
 
   const onOpenModal = () => setIsOpen(true);
@@ -23,7 +25,9 @@ export default function Home() {
       </Head>
 
       <StyledContainer>
-        <Navbar />
+        <Navbar session={session} signIn={signIn} />
+        <button onClick={() => signOut()}>Sign out</button>
+
         <section class="text-container">
           <h1>tradedomainswith.me</h1>
           <h2 style={{ marginBottom: "1rem", fontWeight: "400" }}>
