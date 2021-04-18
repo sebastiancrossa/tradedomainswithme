@@ -6,12 +6,13 @@ import styled from "styled-components";
 import ReactModal from "react-modal";
 import { Container } from "../styles";
 import Navbar from "../components/layout/Navbar";
+import Footer from "../components/layout/Footer";
 import TradeCard from "../components/ui/TradeCard";
 import SwappedCard from "../components/ui/SwappedCard";
 
 const User = () => {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
@@ -119,6 +120,8 @@ const User = () => {
             <button>Add my domain</button>
           </ModalContainer>
         </ReactModal>
+
+        <Footer />
       </StyledContainer>
     </>
   );

@@ -2,6 +2,7 @@ import Head from "next/head";
 import styled from "styled-components";
 import { Container } from "../styles";
 import Navbar from "../components/layout/Navbar";
+import Footer from "../components/layout/Footer";
 import SwapsList from "../components/containers/SwapsList";
 
 export default function Home() {
@@ -23,6 +24,8 @@ export default function Home() {
         </section>
 
         <SwapsList />
+
+        <Footer />
       </StyledContainer>
     </>
   );

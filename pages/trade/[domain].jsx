@@ -3,6 +3,7 @@ import Head from "next/head";
 import styled from "styled-components";
 
 import Navbar from "../../components/layout/Navbar";
+import Footer from "../../components/layout/Footer";
 import { Container } from "../../styles";
 import MakeAnOffer from "../../components/containers/MakeAnOffer";
 import OffersList from "../../components/containers/OffersList";
@@ -50,6 +51,8 @@ const Domain = () => {
 
         <MakeAnOffer />
         <OffersList />
+
+        <Footer />
       </StyledContainer>
     </>
   );

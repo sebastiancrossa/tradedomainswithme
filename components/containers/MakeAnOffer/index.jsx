@@ -4,7 +4,11 @@ const MakeAnOffer = () => {
   return (
     <Background>
       <h3>Are you interested in this domain? Offer one of your own:</h3>
-      <input type="text" placeholder="example.com" />
+      <select>
+        <option value="kisana.mx">kisana.mx</option>
+        <option value="kisana.co">kisana.co</option>
+        <option value="getkairos.com">getkairos.com</option>
+      </select>
       <button>Offer this domain</button>
     </Background>
   );
@@ -26,7 +30,7 @@ const Background = styled.div`
     margin-bottom: 0.5rem;
   }
 
-  input {
+  select {
     padding: 0.5rem;
     width: 100%;
     border: none;

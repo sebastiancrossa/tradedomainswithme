@@ -12,9 +12,15 @@ const SwappedCard = () => {
       </div>
 
       <div>
-        <div className="domain">potentialfor.business</div>
+        <div className="domain">
+          <div className="tag verified">Verified</div>
+          <p>potentialfor.business</p>
+        </div>
         <p id="unaligned-circle">for</p>
-        <div className="domain">nwtn.io</div>
+        <div className="domain">
+          <div className="tag verified">Verified</div>
+          <p>nwtn.io</p>
+        </div>
       </div>
 
       <div className="swapped-user">
@@ -51,6 +57,22 @@ const Background = styled.div`
 
     margin: -2rem auto -0.6rem auto;
     z-index: 1;
+  }
+
+  .tag {
+    width: fit-content;
+    margin: 0 auto 0.5rem auto;
+
+    font-size: 1rem;
+    font-weight: 600;
+
+    border-radius: 50rem;
+    padding: 0.2rem 1rem;
+  }
+
+  .verified {
+    background-color: #d9f6e3;
+    color: #4da769;
   }
 
   .swapped-user {
