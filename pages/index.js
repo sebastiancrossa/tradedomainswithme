@@ -1,15 +1,24 @@
+import { useState } from "react";
 import Head from "next/head";
+import ReactModal from "react-modal";
 import styled from "styled-components";
+
+// Component imports
 import { Container } from "../styles";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import SwapsList from "../components/containers/SwapsList";
 
 export default function Home() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const onOpenModal = () => setIsOpen(true);
+  const onCloseModal = () => setIsOpen(false);
+
   return (
     <>
       <Head>
-        <title>Trade domains with me</title>
+        <title>tradedomainswith.me</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -20,16 +29,60 @@ export default function Home() {
           <h2 style={{ marginBottom: "1rem", fontWeight: "400" }}>
             The easiest way to find people to trade domains with.
           </h2>
-          <button>Swap your first domain</button>
+          <button onClick={onOpenModal}>Swap your first domain</button>
         </section>
 
         <SwapsList />
+
+        <ReactModal
+          isOpen={isOpen}
+          onRequestClose={onCloseModal}
+          shouldCloseOnOverlayClick
+          shouldCloseOnEsc
+          style={{
+            overlay: {
+              backgroundColor: "rgba(255, 255, 255, 0.7)",
+            },
+            content: {
+              border: "none",
+              boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+              maxWidth: "25rem",
+              margin: "auto auto",
+              height: "fit-content",
+              textAlign: "center",
+            },
+          }}
+        >
+          <ModalContainer>
+            <h2>Add a new domain</h2>
+            <input type="text" placeholder="example.com" />
+            <button>Add my domain</button>
+          </ModalContainer>
+        </ReactModal>
 
         <Footer />
       </StyledContainer>
     </>
   );
 }
+
+const ModalContainer = styled.div`
+  input {
+    padding: 0.5rem;
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid #f9f8f4;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+
+    text-align: center;
+  }
+
+  button {
+    width: 100%;
+    padding: 0.5rem;
+  }
+`;
 
 const StyledContainer = styled(Container)`
   .text-container {

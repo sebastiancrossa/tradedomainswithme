@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import styled from "styled-components";
-
 import ReactModal from "react-modal";
+
+// Component imports
 import { Container } from "../styles";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
@@ -132,6 +133,7 @@ const ModalContainer = styled.div`
     padding: 0.5rem;
     width: 100%;
     border: none;
+    border-bottom: 2px solid #f9f8f4;
     font-size: 1rem;
     margin-bottom: 0.5rem;
     border-radius: 5px;

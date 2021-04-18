@@ -3,7 +3,10 @@ import styled from "styled-components";
 const Footer = () => {
   return (
     <Background>
-      <p>Built by Sebastian Crossa (@sebastiancrossa)</p>
+      <p>
+        Built by Sebastian Crossa (
+        <a href="https://twitter.com/SebastianCrossa">@sebastiancrossa</a>)
+      </p>
     </Background>
   );
 };
