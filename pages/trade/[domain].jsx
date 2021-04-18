@@ -49,7 +49,6 @@ const Domain = () => {
         </div>
 
         <MakeAnOffer />
-
         <OffersList />
       </StyledContainer>
     </>
