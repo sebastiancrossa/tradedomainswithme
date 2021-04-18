@@ -10,13 +10,17 @@ const Navbar = () => {
         </a>
       </Link>
 
-      <div className="user-info">
-        <img
-          src="https://avatars.githubusercontent.com/u/20131547?v=4"
-          alt="User profile image"
-        />
-        <p>Sebastian Crossa</p>
-      </div>
+      <Link href="/sebastiancrossa" passHref>
+        <a style={{ color: "black" }}>
+          <div className="user-info">
+            <img
+              src="https://avatars.githubusercontent.com/u/20131547?v=4"
+              alt="User profile image"
+            />
+            <p>Sebastian Crossa</p>
+          </div>
+        </a>
+      </Link>
     </Background>
   );
 };
@@ -25,6 +29,8 @@ const Background = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  font-weight: 600;
 
   img {
     width: 2rem;

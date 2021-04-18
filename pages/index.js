@@ -19,7 +19,7 @@ export default function Home() {
           <h2 style={{ marginBottom: "1rem", fontWeight: "400" }}>
             The easiest way to find people to trade domains with.
           </h2>
-          <button>Start trading for free</button>
+          <button>Swap your first domain</button>
         </section>
 
         <SwapsList />

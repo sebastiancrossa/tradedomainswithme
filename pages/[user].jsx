@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import styled from "styled-components";
 
+import { RiSettings3Fill } from "react-icons/ri";
 import { Container } from "../styles";
 import Navbar from "../components/layout/Navbar";
 import TradeCard from "../components/ui/TradeCard";
@@ -28,6 +29,7 @@ const User = () => {
             />
             <h1>Sebastian Crossa</h1>
             <h2>@{router.query.user}</h2>
+            {/* <RiSettings3Fill size={35} /> */}
           </div>
         </div>
 
@@ -46,7 +48,7 @@ const User = () => {
         </section>
 
         <section>
-          <h2>Succesful swaps</h2>
+          <h2>Swaps with other users</h2>
 
           <div className="swapped-list">
             <SwappedCard />

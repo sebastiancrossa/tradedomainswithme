@@ -15,6 +15,7 @@ const OfferCard = () => {
       </div>
 
       <div className="domain">
+        <div className="tag unverified">Unverified</div>
         <p>potentialfor.business</p>
       </div>
 
@@ -44,6 +45,22 @@ const Background = styled.div`
     height: auto;
     border-radius: 50%;
     margin-right: 0.5rem;
+  }
+
+  .tag {
+    width: fit-content;
+    margin: 0 auto 0.5rem auto;
+
+    font-size: 1rem;
+    font-weight: 600;
+
+    border-radius: 50rem;
+    padding: 0.2rem 1rem;
+  }
+
+  .unverified {
+    background-color: #fbf1eb;
+    color: #f1a16f;
   }
 
   .user-info {

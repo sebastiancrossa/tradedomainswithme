@@ -22,7 +22,7 @@ const Domain = () => {
 
         <div className="heading-info">
           <div className="tag">
-            <p>Unswapped</p>
+            <p>Unverified</p>
           </div>
           <h1>
             Swap offers for
@@ -65,12 +65,16 @@ const StyledContainer = styled(Container)`
   }
 
   .tag {
-    background-color: #fffae7;
-    color: #fddf85;
+    background-color: #fbf1eb;
+    color: #f1a16f;
 
     width: fit-content;
     margin: 0 auto 0.5rem auto;
-    padding: 0.3rem 1.3rem;
+
+    font-size: 1rem;
+
+    border-radius: 50rem;
+    padding: 0.2rem 1rem;
 
     font-weight: 600;
     border-radius: 50rem;
@@ -88,8 +92,6 @@ const StyledContainer = styled(Container)`
   .user-info {
     display: flex;
     align-items: center;
-
-    font-size: 1.1rem;
   }
 `;
 
