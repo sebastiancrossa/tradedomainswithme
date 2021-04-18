@@ -7,12 +7,14 @@ const OfferCard = ({ user, domain }) => {
     <Container>
       <Background>
         <div className="user-info">
-          <img
-            src="https://avatars.githubusercontent.com/u/20131547?v=4"
-            alt="User profile image"
-          />
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <img
+              src="https://avatars.githubusercontent.com/u/20131547?v=4"
+              alt="User profile image"
+            />
+            <p>{user} wants to swap this domain for:</p>
+          </div>
           <p>
-            {user} wants to swap this domain for{" "}
             <span
               style={{
                 padding: "0.5rem",
@@ -40,7 +42,7 @@ const OfferCard = ({ user, domain }) => {
             size={25}
             style={{ stroke: "white", marginRight: "0.5rem" }}
           />
-          <p>Succefully swapped</p>
+          <p>Mark as swapped</p>
         </button>
       </div>
     </Container>
@@ -99,6 +101,7 @@ const Background = styled.div`
   .user-info {
     display: flex;
     align-items: center;
+    justify-content: space-between;
 
     font-size: 1.1rem;
     font-weight: 600;

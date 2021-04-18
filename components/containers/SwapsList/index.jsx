@@ -25,6 +25,14 @@ const Background = styled.section`
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-gap: 3rem;
+
+    @media only screen and (max-width: 1024px) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media only screen and (max-width: 425px) {
+      grid-template-columns: 1fr;
+    }
   }
 `;
 

@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 import Navbar from "../../components/layout/Navbar";
 import { Container } from "../../styles";
+import MakeAnOffer from "../../components/containers/MakeAnOffer";
 import OffersList from "../../components/containers/OffersList";
 
 const Domain = () => {
@@ -36,7 +37,7 @@ const Domain = () => {
               alignItems: "center",
             }}
           >
-            <p style={{ marginRight: "0.5rem" }}>a domain by</p>
+            <p style={{ marginRight: "0.5rem" }}>a domain owned by</p>
             <div className="user-info">
               <img
                 src="https://avatars.githubusercontent.com/u/20131547?v=4"
@@ -46,6 +47,8 @@ const Domain = () => {
             </div>
           </div>
         </div>
+
+        <MakeAnOffer />
 
         <OffersList />
       </StyledContainer>
