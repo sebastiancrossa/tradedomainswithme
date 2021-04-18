@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import styled from "styled-components";
 
-import { RiSettings3Fill } from "react-icons/ri";
+import ReactModal from "react-modal";
 import { Container } from "../styles";
 import Navbar from "../components/layout/Navbar";
 import TradeCard from "../components/ui/TradeCard";
@@ -10,6 +11,10 @@ import SwappedCard from "../components/ui/SwappedCard";
 
 const User = () => {
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(true);
+
+  const onOpenModal = () => setIsOpen(true);
+  const onCloseModal = () => setIsOpen(false);
 
   return (
     <>
@@ -28,8 +33,7 @@ const User = () => {
               alt="User profile image"
             />
             <h1>Sebastian Crossa</h1>
-            <h2>@{router.query.user}</h2>
-            {/* <RiSettings3Fill size={35} /> */}
+            <p>@{router.query.user}</p>
           </div>
         </div>
 
@@ -38,7 +42,9 @@ const User = () => {
           <div class="open">3 open swap offers</div>
         </div>
 
-        <button className="add-btn">Add a domain</button>
+        <button className="add-btn" onClick={onOpenModal}>
+          Add a domain
+        </button>
 
         <section>
           <h2 style={{ margin: "0" }}>Verify your domains</h2>
@@ -87,10 +93,54 @@ const User = () => {
             <SwappedCard />
           </div>
         </section>
+
+        <ReactModal
+          isOpen={isOpen}
+          onRequestClose={onCloseModal}
+          shouldCloseOnOverlayClick
+          shouldCloseOnEsc
+          style={{
+            overlay: {
+              backgroundColor: "rgba(255, 255, 255, 0.7)",
+            },
+            content: {
+              border: "none",
+              boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+              maxWidth: "25rem",
+              margin: "auto auto",
+              height: "fit-content",
+              textAlign: "center",
+            },
+          }}
+        >
+          <ModalContainer>
+            <h2>Add a new domain</h2>
+            <input type="text" placeholder="example.com" />
+            <button>Add my domain</button>
+          </ModalContainer>
+        </ReactModal>
       </StyledContainer>
     </>
   );
 };
+
+const ModalContainer = styled.div`
+  input {
+    padding: 0.5rem;
+    width: 100%;
+    border: none;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 5px;
+
+    text-align: center;
+  }
+
+  button {
+    width: 100%;
+    padding: 0.5rem;
+  }
+`;
 
 const StyledContainer = styled(Container)`
   .code {
@@ -122,6 +172,10 @@ const StyledContainer = styled(Container)`
   .user-container {
     margin: 6rem 0 2rem 0;
     text-align: center;
+
+    p {
+      font-size: 1.2rem;
+    }
 
     img {
       width: 8rem;
