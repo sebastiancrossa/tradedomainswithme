@@ -6,7 +6,7 @@ const SwapsList = () => {
     <Background>
       <h2>Open swap offers</h2>
 
-      <div class="offers-list">
+      <div className="offers-list">
         <TradeCard />
         <TradeCard />
         <TradeCard />

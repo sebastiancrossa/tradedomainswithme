@@ -4,7 +4,7 @@ import OfferCard from "../../ui/OfferCard";
 const OffersList = () => {
   return (
     <Background>
-      <div class="offer-list">
+      <div className="offer-list">
         <OfferCard user="Sebastian Crossa" domain="kisana.mx" />
         <OfferCard user="Jonathan Chavez" domain="nwtn.io" />
       </div>
