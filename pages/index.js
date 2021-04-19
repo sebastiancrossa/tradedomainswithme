@@ -1,5 +1,7 @@
-import { signIn, signOut, useSession } from "next-auth/client";
+import { signIn, signOut, getSession } from "next-auth/client";
 import { useState } from "react";
+import { useRouter } from "next/router";
+import axios from "axios";
 import Head from "next/head";
 import ReactModal from "react-modal";
 import styled from "styled-components";
@@ -10,12 +12,36 @@ import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import SwapsList from "../components/containers/SwapsList";
 
-export default function Home() {
-  const [session, loading] = useSession();
+export default function Home({ session, domains, userInfo }) {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [newDomain, setNewDomain] = useState("");
+
+  console.log("userinfo", userInfo);
 
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
+
+  const handleDomainSubmit = async () => {
+    // Creating the new domain
+    // TODO: Do some server side protection as well
+    let createdDomain = await axios
+      .request({
+        method: "POST",
+        url: "http://localhost:5000/api/domains/",
+        headers: { "Content-Type": "application/json" },
+        data: {
+          secret: "q+pXtJSG#JDN37HsE@,",
+          user_id: session.user_id,
+          name: newDomain,
+        },
+      })
+      .then((res) => res.data)
+      .catch((err) => console.log(err));
+
+    onCloseModal();
+    router.push(`/${userInfo.user_name.toLowerCase()}`);
+  };
 
   return (
     <>
@@ -26,7 +52,7 @@ export default function Home() {
 
       <StyledContainer>
         <Navbar session={session} signIn={signIn} />
-        <button onClick={() => signOut()}>Sign out</button>
+        {/* <button onClick={() => signOut()}>Sign out</button> */}
 
         <section class="text-container">
           <h1>tradedomainswith.me</h1>
@@ -36,7 +62,7 @@ export default function Home() {
           <button onClick={onOpenModal}>Swap your first domain</button>
         </section>
 
-        <SwapsList />
+        <SwapsList domains={domains} />
 
         <ReactModal
           isOpen={isOpen}
@@ -59,8 +85,13 @@ export default function Home() {
         >
           <ModalContainer>
             <h2>Add a new domain</h2>
-            <input type="text" placeholder="example.com" />
-            <button>Add my domain</button>
+            <input
+              type="text"
+              placeholder="example.com"
+              value={newDomain}
+              onChange={(e) => setNewDomain(e.target.value)}
+            />
+            <button onClick={() => handleDomainSubmit()}>Add my domain</button>
           </ModalContainer>
         </ReactModal>
 
@@ -68,6 +99,45 @@ export default function Home() {
       </StyledContainer>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+
+  // Fetch complete user info
+  const users = await axios
+    .request({
+      method: "GET",
+      url: "http://localhost:5000/api/users/",
+      headers: { "Content-Type": "application/json" },
+      data: {
+        secret: "q+pXtJSG#JDN37HsE@,",
+      },
+    })
+    .then((res) => res.data)
+    .catch((err) => console.log(err));
+
+  const user = users.filter((user) => user._id === session.user_id);
+
+  // Fetch domains from user
+  const domains = await axios
+    .request({
+      method: "GET",
+      url: `http://localhost:5000/api/domains/`,
+      data: {
+        secret: "q+pXtJSG#JDN37HsE@,",
+      },
+    })
+    .then((res) => res.data)
+    .catch((err) => console.log(err));
+
+  return {
+    props: {
+      session,
+      domains,
+      userInfo: user[0],
+    },
+  };
 }
 
 const ModalContainer = styled.div`

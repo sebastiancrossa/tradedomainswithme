@@ -32,22 +32,6 @@ const User = ({ session, initialDomains, userInfo }) => {
   // const isMe = false;
 
   useEffect(() => {
-    const fetchDomains = async () => {
-      // Fetch domains from user
-      await axios
-        .request({
-          method: "GET",
-          url: `http://localhost:5000/api/domains/${session.user_id}`,
-          data: {
-            secret: "q+pXtJSG#JDN37HsE@,",
-          },
-        })
-        .then((res) => res.data)
-        .catch((err) => console.log(err));
-    };
-
-    // fetchDomains();
-
     let verifiedDomains = domains.filter(
       (domain) => domain.isVerified === true
     );

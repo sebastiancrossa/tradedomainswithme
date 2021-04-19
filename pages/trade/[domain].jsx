@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { signIn, getSession } from "next-auth/client";
 import Head from "next/head";
+import axios from "axios";
+
 import styled from "styled-components";
 
 import ReactModal from "react-modal";
@@ -17,6 +19,24 @@ const Domain = ({ session }) => {
 
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
+
+  const handleDomainDelete = () => {
+    // await axios
+    //   .request({
+    //     method: "DELETE",
+    //     url: `http://localhost:5000/api/domains/`,
+    //     headers: { "Content-Type": "application/json" },
+    //     data: {
+    //       secret: "q+pXtJSG#JDN37HsE@,",
+    //       user_id: session.user_id,
+    //       name: newDomain,
+    //     },
+    //   })
+    //   .then((res) => res.data)
+    //   .catch((err) => console.log(err));
+
+    router.push("/");
+  };
 
   return (
     <>
@@ -55,10 +75,12 @@ const Domain = ({ session }) => {
               <p>Sebastian Crossa</p>
             </div>
           </div>
-          <button className="close">Close swap offer</button>
+          <button className="close" onClick={() => onOpenModal()}>
+            Delete this domain
+          </button>
         </div>
 
-        <MakeAnOffer />
+        {session && <MakeAnOffer />}
         <OffersList />
 
         <Footer />
@@ -83,9 +105,24 @@ const Domain = ({ session }) => {
           }}
         >
           <ModalContainer>
-            <h2>Are you sure you want to close </h2>
-            <input type="text" placeholder="example.com" />
-            <button>Add my domain</button>
+            <h2>Are you sure you want to delete this domain?</h2>
+            <p style={{ marginBottom: "1rem" }}>
+              Deleting this domain will close the swap offer and remove all of
+              the received swap offers as well. You will still be able to add
+              the domain back in the future if you ever change your mind.
+            </p>
+
+            <div class="buttons">
+              <button
+                className="remove-btn"
+                onClick={() => handleDomainDelete()}
+              >
+                Remove domain
+              </button>
+              <button className="close-btn" onClick={onCloseModal}>
+                Close
+              </button>
+            </div>
           </ModalContainer>
         </ReactModal>
       </StyledContainer>
@@ -114,6 +151,23 @@ const ModalContainer = styled.div`
     border-radius: 5px;
 
     text-align: center;
+  }
+
+  .remove-btn {
+    background-color: #ec6559;
+    border: 2px solid #ec6559;
+  }
+
+  .buttons {
+    display: grid;
+    grid-auto-columns: auto;
+    grid-gap: 0.5rem;
+  }
+
+  .close-btn {
+    background: none;
+    border: 2px solid #5c45ff;
+    color: #5c45ff;
   }
 
   button {
