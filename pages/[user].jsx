@@ -1,7 +1,7 @@
 // Libraries
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { signIn, signOut, useSession, getSession } from "next-auth/client";
+import { signIn, getSession } from "next-auth/client";
 import Head from "next/head";
 import axios from "axios";
 import styled from "styled-components";
@@ -14,30 +14,60 @@ import Footer from "../components/layout/Footer";
 import TradeCard from "../components/ui/TradeCard";
 import SwappedCard from "../components/ui/SwappedCard";
 
-const User = ({ session, domains, userInfo }) => {
+const User = ({ session, initialDomains, userInfo }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+
+  // Domain-related state
+  // ! this logic is ugly af, refactor once everything is working
+  const [domains, setDomains] = useState(initialDomains);
   const [verifiedDomains, setVerifiedDomains] = useState([]);
   const [unverifiedDomains, setUnverifiedDomains] = useState([]);
+  const [unswappedDomains, setUnswappedDomains] = useState([]);
+  const [swappedDomains, setSwappedDomains] = useState([]);
   const [newDomain, setNewDomain] = useState("");
+  // ----
+
   const isMe = session.user_id === userInfo._id;
   // const isMe = false;
 
   useEffect(() => {
+    const fetchDomains = async () => {
+      // Fetch domains from user
+      await axios
+        .request({
+          method: "GET",
+          url: `http://localhost:5000/api/domains/${session.user_id}`,
+          data: {
+            secret: "q+pXtJSG#JDN37HsE@,",
+          },
+        })
+        .then((res) => res.data)
+        .catch((err) => console.log(err));
+    };
+
+    // fetchDomains();
+
     let verifiedDomains = domains.filter(
       (domain) => domain.isVerified === true
     );
     let unverifiedDomains = domains.filter(
       (domain) => domain.isVerified === false
     );
+    let swappedDomains = domains.filter((domain) => domain.swappedWith);
+    let unswappedDomains = domains.filter((domain) => !domain.swappedWith);
 
     setVerifiedDomains(verifiedDomains);
     setUnverifiedDomains(unverifiedDomains);
-  }, []);
+    setSwappedDomains(swappedDomains);
+    setUnswappedDomains(unswappedDomains);
+  }, [domains]);
 
   console.log("domains", domains);
   console.log("verified domains", verifiedDomains);
   console.log("unverified domains", unverifiedDomains);
+  console.log("swapped domains", swappedDomains);
+  console.log("unswapped domains", unswappedDomains);
 
   // console.log("userInfo", userInfo);
   // console.log("session in user", session);
@@ -45,7 +75,7 @@ const User = ({ session, domains, userInfo }) => {
   const handleDomainAdd = async () => {
     // Creating the new domain
     // TODO: Do some server side protection as well
-    await axios
+    let createdDomain = await axios
       .request({
         method: "POST",
         url: "http://localhost:5000/api/domains/",
@@ -58,6 +88,11 @@ const User = ({ session, domains, userInfo }) => {
       })
       .then((res) => res.data)
       .catch((err) => console.log(err));
+
+    setDomains((prevState) => [...prevState, createdDomain]);
+
+    // Close the modal
+    setIsOpen(false);
   };
 
   const onOpenModal = () => setIsOpen(true);
@@ -96,8 +131,8 @@ const User = ({ session, domains, userInfo }) => {
         )}
 
         <div className="user-stats">
-          <div class="traded">{userInfo.domains.length} domains swaped</div>
-          <div class="open">{userInfo.domains.length} open swap offers</div>
+          <div class="open">{unswappedDomains.length} open swap offers</div>
+          <div class="traded">{swappedDomains.length} domains swaped</div>
         </div>
 
         {isMe && unverifiedDomains.length > 0 && (
@@ -121,14 +156,14 @@ const User = ({ session, domains, userInfo }) => {
               the owner of that domain!
             </p>
 
-            {unverifiedDomains.map((domain) => (
-              <div className="unverified-domains">
+            <div className="unverified-domains">
+              {unverifiedDomains.map((domain) => (
                 <div className="unverified-domain">
                   <p>{domain.name}</p>
                   <button>Check verification</button>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </section>
         )}
 
@@ -136,20 +171,29 @@ const User = ({ session, domains, userInfo }) => {
           {/* <h2>Open swap offers from this user</h2> */}
           <h2>{isMe ? "Your open swap offers" : "Open swap offers"}</h2>
 
-          <div className="offers-list">
-            <TradeCard />
-            <TradeCard />
-          </div>
+          {unswappedDomains.length == 0 ? (
+            <p>No current domains offers just yet!</p>
+          ) : (
+            <div className="offers-list">
+              {unswappedDomains.map((unswappedDomain) => (
+                <TradeCard domain={unswappedDomain} />
+              ))}
+            </div>
+          )}
         </section>
 
         <section>
           <h2>{isMe ? "Your swap history" : "Swap history"}</h2>
 
-          <div className="swapped-list">
-            <SwappedCard />
-            <SwappedCard />
-            <SwappedCard />
-          </div>
+          {swappedDomains.length == 0 ? (
+            <p>No swaps done just yet!</p>
+          ) : (
+            <div className="swapped-list">
+              {swappedDomains.map((swappedDomain) => (
+                <SwappedCard domain={swappedDomain} />
+              ))}
+            </div>
+          )}
         </section>
 
         <ReactModal
@@ -214,7 +258,6 @@ export async function getServerSideProps(context) {
     .request({
       method: "GET",
       url: `http://localhost:5000/api/domains/${session.user_id}`,
-      headers: { "Content-Type": "application/json" },
       data: {
         secret: "q+pXtJSG#JDN37HsE@,",
       },
@@ -222,12 +265,10 @@ export async function getServerSideProps(context) {
     .then((res) => res.data)
     .catch((err) => console.log(err));
 
-  console.log("domains", domains);
-
   return {
     props: {
       session,
-      domains,
+      initialDomains: domains,
       userInfo: user[0],
     },
   };
@@ -263,6 +304,7 @@ const StyledContainer = styled(Container)`
   .unverified-domains {
     display: flex;
     text-align: center;
+    flex-wrap: wrap;
 
     button {
       padding: 0.5rem;
@@ -272,7 +314,7 @@ const StyledContainer = styled(Container)`
   }
 
   .unverified-domain {
-    margin-right: 1rem;
+    margin: 0 1rem 1rem 0;
 
     padding: 1rem;
     border-radius: 5px;

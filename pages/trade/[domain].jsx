@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { signIn, getSession } from "next-auth/client";
 import Head from "next/head";
 import styled from "styled-components";
 
@@ -10,7 +11,7 @@ import { Container } from "../../styles";
 import MakeAnOffer from "../../components/containers/MakeAnOffer";
 import OffersList from "../../components/containers/OffersList";
 
-const Domain = () => {
+const Domain = ({ session }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -25,7 +26,7 @@ const Domain = () => {
       </Head>
 
       <StyledContainer>
-        <Navbar />
+        <Navbar session={session} signIn={signIn} />
 
         <div className="heading-info">
           <div className="tag">
@@ -91,6 +92,16 @@ const Domain = () => {
     </>
   );
 };
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+
+  return {
+    props: {
+      session,
+    },
+  };
+}
 
 const ModalContainer = styled.div`
   input {

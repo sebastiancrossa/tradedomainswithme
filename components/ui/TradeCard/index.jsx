@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { BsArrowRightShort } from "react-icons/bs";
 
-const OfferCard = () => {
+const OfferCard = ({ domain }) => {
   return (
     <Background>
       <div className="user-info">
@@ -15,16 +15,18 @@ const OfferCard = () => {
       </div>
 
       <div className="domain">
-        <div className="tag unverified">Unverified</div>
-        <p>potentialfor.business</p>
+        <div className="tag unverified">
+          {domain && domain.isVerified ? "Verified" : "Unverified"}
+        </div>
+        <p>{domain && domain.name}</p>
       </div>
 
       <div class="trade-info">
         <p>
-          <span>8</span> swap offers
+          <span>{domain && domain.swapOffersReceived.length}</span> swap offers
         </p>
 
-        <Link href="/trade/potentialfor.business" passHref>
+        <Link href={`/trade/${domain && domain.name}`} passHref>
           <a>
             <button>
               <p>Check out offers</p>

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const SwappedCard = () => {
+const SwappedCard = ({ domain }) => {
   return (
     <Background>
       <div className="user-info">
@@ -13,8 +13,8 @@ const SwappedCard = () => {
 
       <div>
         <div className="domain">
-          <div className="tag verified">Verified</div>
-          <p>potentialfor.business</p>
+          <div className="tag verified">{domain.isVerified}</div>
+          <p>{domain.name}</p>
         </div>
         <p id="unaligned-circle">for</p>
         <div className="domain">
