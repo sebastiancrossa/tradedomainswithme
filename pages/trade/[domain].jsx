@@ -13,27 +13,27 @@ import { Container } from "../../styles";
 import MakeAnOffer from "../../components/containers/MakeAnOffer";
 import OffersList from "../../components/containers/OffersList";
 
-const Domain = ({ session }) => {
+const Domain = ({ session, domainInfo }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
 
-  const handleDomainDelete = () => {
-    // await axios
-    //   .request({
-    //     method: "DELETE",
-    //     url: `http://localhost:5000/api/domains/`,
-    //     headers: { "Content-Type": "application/json" },
-    //     data: {
-    //       secret: "q+pXtJSG#JDN37HsE@,",
-    //       user_id: session.user_id,
-    //       name: newDomain,
-    //     },
-    //   })
-    //   .then((res) => res.data)
-    //   .catch((err) => console.log(err));
+  console.log(domainInfo);
+
+  const handleDomainDelete = async () => {
+    await axios
+      .request({
+        method: "DELETE",
+        url: `http://localhost:5000/api/domains/${domainInfo._id}`,
+        headers: { "Content-Type": "application/json" },
+        data: {
+          secret: "q+pXtJSG#JDN37HsE@,",
+        },
+      })
+      .then((res) => res.data)
+      .catch((err) => console.log(err));
 
     router.push("/");
   };
@@ -133,9 +133,28 @@ const Domain = ({ session }) => {
 export async function getServerSideProps(context) {
   const session = await getSession(context);
 
+  // Fetching id of the domain
+  const domainInfo = await axios
+    .request({
+      method: "GET",
+      url: "http://localhost:5000/api/domains/",
+      headers: { "Content-Type": "application/json" },
+      data: {
+        secret: "q+pXtJSG#JDN37HsE@,",
+      },
+    })
+    .then((res) => res.data)
+    .then((domains) =>
+      domains.filter((domain) => domain.name === context.query.domain)
+    )
+    .catch((err) => console.log(err));
+
+  console.log(domainInfo);
+
   return {
     props: {
       session,
+      domainInfo: domainInfo[0],
     },
   };
 }
