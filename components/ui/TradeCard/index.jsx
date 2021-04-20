@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { BsArrowRightShort } from "react-icons/bs";
 
 const OfferCard = ({ domain }) => {
+  console.log(domain);
+
   return (
     <Background>
       <div className="user-info">
@@ -15,9 +17,12 @@ const OfferCard = ({ domain }) => {
       </div>
 
       <div className="domain">
-        <div className="tag unverified">
-          {domain && domain.isVerified ? "Verified" : "Unverified"}
-        </div>
+        {domain.isVerified ? (
+          <div className="tag verified">Verified</div>
+        ) : (
+          <div className="tag unverified">Unverified</div>
+        )}
+
         <p>{domain && domain.name}</p>
       </div>
 
@@ -58,6 +63,11 @@ const Background = styled.div`
 
     border-radius: 50rem;
     padding: 0.2rem 1rem;
+  }
+
+  .verified {
+    background-color: #d9f6e3;
+    color: #4da769;
   }
 
   .unverified {

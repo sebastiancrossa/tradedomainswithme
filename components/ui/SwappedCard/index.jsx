@@ -75,6 +75,11 @@ const Background = styled.div`
     color: #4da769;
   }
 
+  .unverified {
+    background-color: #fbf1eb;
+    color: #f1a16f;
+  }
+
   .swapped-user {
     display: flex;
     align-items: center;

@@ -6,6 +6,7 @@ import Head from "next/head";
 import axios from "axios";
 import styled from "styled-components";
 import ReactModal from "react-modal";
+import toast from "react-hot-toast";
 
 // Component imports
 import { Container } from "../styles";
@@ -13,6 +14,8 @@ import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import TradeCard from "../components/ui/TradeCard";
 import SwappedCard from "../components/ui/SwappedCard";
+
+const verifySuccess = () => toast.success("Your domain has been verified!");
 
 const User = ({ session, initialDomains, userInfo }) => {
   const router = useRouter();
@@ -53,9 +56,6 @@ const User = ({ session, initialDomains, userInfo }) => {
   console.log("swapped domains", swappedDomains);
   console.log("unswapped domains", unswappedDomains);
 
-  // console.log("userInfo", userInfo);
-  // console.log("session in user", session);
-
   const handleDomainAdd = async () => {
     // Creating the new domain
     // TODO: Do some server side protection as well
@@ -77,6 +77,23 @@ const User = ({ session, initialDomains, userInfo }) => {
 
     // Close the modal
     setIsOpen(false);
+  };
+
+  const handleDomainVerify = async (domainName, domainId) => {
+    const verifyPromise = axios.request({
+      method: "PUT",
+      url: `http://localhost:5000/api/domains/verify/${domainId}`,
+      headers: { "Content-Type": "application/json" },
+      data: {
+        secret: "q+pXtJSG#JDN37HsE@,",
+      },
+    });
+
+    toast.promise(verifyPromise, {
+      loading: `Verifying ${domainName}...`,
+      success: `${domainName} is verified!`,
+      error: `Error when veryfing ${domainName}, try again.`,
+    });
   };
 
   const onOpenModal = () => setIsOpen(true);
@@ -144,7 +161,11 @@ const User = ({ session, initialDomains, userInfo }) => {
               {unverifiedDomains.map((domain) => (
                 <div className="unverified-domain">
                   <p>{domain.name}</p>
-                  <button>Check verification</button>
+                  <button
+                    onClick={() => handleDomainVerify(domain.name, domain._id)}
+                  >
+                    Check verification
+                  </button>
                 </div>
               ))}
             </div>

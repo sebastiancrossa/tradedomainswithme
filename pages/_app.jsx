@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { Provider } from "next-auth/client";
+import { Toaster } from "react-hot-toast";
 
 import { ThemeProvider } from "styled-components";
 import theme from "../utils/theme";
@@ -19,6 +20,7 @@ function MyApp({ Component, pageProps }) {
         <ThemeProvider theme={theme}>
           <Component {...pageProps} />
           <GlobalStyles />
+          <Toaster />
         </ThemeProvider>
       </Provider>
     </>
