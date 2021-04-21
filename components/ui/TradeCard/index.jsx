@@ -4,8 +4,6 @@ import styled from "styled-components";
 import { BsArrowRightShort } from "react-icons/bs";
 
 const OfferCard = ({ domain }) => {
-  console.log(domain);
-
   return (
     <Background>
       <div className="user-info">

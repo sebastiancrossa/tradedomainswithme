@@ -17,10 +17,10 @@ export default function Home({ session, domains, userInfo }) {
   const [isOpen, setIsOpen] = useState(false);
   const [newDomain, setNewDomain] = useState("");
 
-  console.log("userinfo", userInfo);
-
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
+
+  console.log(userInfo);
 
   const handleDomainSubmit = async () => {
     // Creating the new domain
@@ -51,7 +51,7 @@ export default function Home({ session, domains, userInfo }) {
       </Head>
 
       <StyledContainer>
-        <Navbar session={session} signIn={signIn} />
+        <Navbar session={session} user={userInfo.user_name} signIn={signIn} />
         {/* <button onClick={() => signOut()}>Sign out</button> */}
 
         <section class="text-container">
@@ -59,7 +59,12 @@ export default function Home({ session, domains, userInfo }) {
           <h2 style={{ marginBottom: "1rem", fontWeight: "400" }}>
             The easiest way to find people to trade domains with.
           </h2>
-          <button onClick={onOpenModal}>Swap your first domain</button>
+
+          {session ? (
+            <button onClick={onOpenModal}>Swap your first domain</button>
+          ) : (
+            <button onClick={signIn}>Swap your first domain</button>
+          )}
         </section>
 
         <SwapsList domains={domains} />
@@ -103,24 +108,31 @@ export default function Home({ session, domains, userInfo }) {
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);
+  let domains = null;
+  let user = null;
 
-  // Fetch complete user info
-  const users = await axios
-    .request({
-      method: "GET",
-      url: "http://localhost:5000/api/users/",
-      headers: { "Content-Type": "application/json" },
-      data: {
-        secret: "q+pXtJSG#JDN37HsE@,",
-      },
-    })
-    .then((res) => res.data)
-    .catch((err) => console.log(err));
+  if (session) {
+    // Fetch complete user info
+    const users = await axios
+      .request({
+        method: "GET",
+        url: "http://localhost:5000/api/users/",
+        headers: { "Content-Type": "application/json" },
+        data: {
+          secret: "q+pXtJSG#JDN37HsE@,",
+        },
+      })
+      .then((res) => res.data)
+      .catch((err) => console.log(err));
 
-  const user = users.filter((user) => user._id === session.user_id);
+    // console.log(users);
+    // console.log(session);
 
-  // Fetch domains from user
-  const domains = await axios
+    user = users.filter((user) => user.external_id === session.user_id);
+  }
+
+  // Fetch all domains from user
+  domains = await axios
     .request({
       method: "GET",
       url: `http://localhost:5000/api/domains/`,
@@ -134,8 +146,8 @@ export async function getServerSideProps(context) {
   return {
     props: {
       session,
-      domains,
-      userInfo: user[0],
+      domains: domains,
+      userInfo: session ? user[0] : null,
     },
   };
 }

@@ -50,11 +50,11 @@ const User = ({ session, initialDomains, userInfo }) => {
     setUnswappedDomains(unswappedDomains);
   }, [domains]);
 
-  console.log("domains", domains);
-  console.log("verified domains", verifiedDomains);
-  console.log("unverified domains", unverifiedDomains);
-  console.log("swapped domains", swappedDomains);
-  console.log("unswapped domains", unswappedDomains);
+  // console.log("domains", domains);
+  // console.log("verified domains", verifiedDomains);
+  // console.log("unverified domains", unverifiedDomains);
+  // console.log("swapped domains", swappedDomains);
+  // console.log("unswapped domains", unswappedDomains);
 
   const handleDomainAdd = async () => {
     // Creating the new domain
@@ -255,14 +255,18 @@ export async function getServerSideProps(context) {
     .catch((err) => console.log(err));
 
   const user = users.filter(
-    (user) => user.user_name.toLowerCase() === context.query.user
+    (user) => user.user_name.toLowerCase() === context.query.user.toLowerCase()
   );
+
+  // console.log("users", users);
+  // console.log("user", user);
+  // console.log("session", session);
 
   // Fetch domains from user
   const domains = await axios
     .request({
       method: "GET",
-      url: `http://localhost:5000/api/domains/${session.user_id}`,
+      url: `http://localhost:5000/api/domains/${user[0]._id}`,
       data: {
         secret: "q+pXtJSG#JDN37HsE@,",
       },

@@ -1,8 +1,8 @@
 import Link from "next/link";
 import styled from "styled-components";
 
-const Navbar = ({ session, signIn }) => {
-  console.log("User session: ", session);
+const Navbar = ({ session, user, signIn }) => {
+  console.log(session);
 
   return (
     <Background>
@@ -13,7 +13,7 @@ const Navbar = ({ session, signIn }) => {
       </Link>
       {!session && <button onClick={() => signIn()}>Sign in</button>}
       {session && (
-        <Link href={`/sebastiancrossa`} passHref>
+        <Link href={`/${user}`} passHref>
           <a style={{ color: "black" }}>
             <div className="user-info">
               <img src={session.user.image} alt="User profile image" />

@@ -17,10 +17,11 @@ const Domain = ({ session, domainInfo }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
+  // console.log(session);
+  // console.log(domainInfo);
+
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
-
-  console.log(domainInfo);
 
   const handleDomainDelete = async () => {
     await axios
@@ -80,8 +81,8 @@ const Domain = ({ session, domainInfo }) => {
           </button>
         </div>
 
-        {session && <MakeAnOffer />}
-        <OffersList />
+        {session && session.user_id !== domainInfo.user_id && <MakeAnOffer />}
+        <OffersList offers={domainInfo.swapOffersReceived} />
 
         <Footer />
 
@@ -149,7 +150,7 @@ export async function getServerSideProps(context) {
     )
     .catch((err) => console.log(err));
 
-  console.log(domainInfo);
+  // console.log(domainInfo);
 
   return {
     props: {

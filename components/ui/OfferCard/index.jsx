@@ -1,8 +1,30 @@
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { BiCheck } from "react-icons/bi";
 import { AiOutlineTwitter } from "react-icons/ai";
 
-const OfferCard = ({ user, domain }) => {
+const OfferCard = ({ userId, domainId }) => {
+  const [userInfo, setUserInfo] = useState();
+
+  const fetchInfo = async () => {
+    // Fetch complete user info
+    const user = await axios
+      .request({
+        method: "GET",
+        url: `http://localhost:5000/api/users/${userId}`,
+        headers: { "Content-Type": "application/json" },
+        data: {
+          secret: "q+pXtJSG#JDN37HsE@,",
+        },
+      })
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    // fetchInfo();
+  }, []);
+
   return (
     <Container>
       <Background>
