@@ -1,17 +1,41 @@
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import axios from "axios";
 import styled from "styled-components";
 
 import { BsArrowRightShort } from "react-icons/bs";
 
 const OfferCard = ({ domain }) => {
+  const [userInfo, setUserInfo] = useState();
+
+  // Getting the user ino for each card
+  const fetchUserInfo = async () => {
+    await axios
+      .request({
+        method: "GET",
+        url: `http://localhost:5000/api/users/${domain.user_id}`,
+        headers: { "Content-Type": "application/json" },
+        data: {
+          secret: "q+pXtJSG#JDN37HsE@,",
+        },
+      })
+      .then((res) => res.data)
+      .then((user) => setUserInfo(user[0]))
+      .catch((err) => console.log(err));
+  };
+
+  // console.log(userInfo);
+  console.log(userInfo);
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, []);
+
   return (
     <Background>
       <div className="user-info">
-        <img
-          src="https://avatars.githubusercontent.com/u/20131547?v=4"
-          alt="User profile image"
-        />
-        <p>Sebastian Crossa wants to trade</p>
+        <img src={userInfo && userInfo.profile_img} alt="User profile image" />
+        <p>@{userInfo && userInfo.user_name} wants to trade</p>
       </div>
 
       <div className="domain">

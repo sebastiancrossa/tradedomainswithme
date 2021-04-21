@@ -31,7 +31,7 @@ const User = ({ session, initialDomains, userInfo }) => {
   const [newDomain, setNewDomain] = useState("");
   // ----
 
-  const isMe = session ? session.user_id === userInfo._id : false;
+  const isMe = session ? session.user_id === userInfo.external_id : false;
   // const isMe = false;
 
   useEffect(() => {
@@ -107,7 +107,11 @@ const User = ({ session, initialDomains, userInfo }) => {
       </Head>
 
       <StyledContainer>
-        <Navbar session={session} signIn={signIn} />
+        <Navbar
+          session={session}
+          user={userInfo && userInfo.user_name}
+          signIn={signIn}
+        />
 
         <div className="user-container">
           <div>

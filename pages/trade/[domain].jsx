@@ -13,9 +13,11 @@ import { Container } from "../../styles";
 import MakeAnOffer from "../../components/containers/MakeAnOffer";
 import OffersList from "../../components/containers/OffersList";
 
-const Domain = ({ session, domainInfo }) => {
+const Domain = ({ session, userInfo, domainInfo }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+
+  console.log("userInfo on domain", userInfo);
 
   // console.log(session);
   // console.log(domainInfo);
@@ -47,7 +49,11 @@ const Domain = ({ session, domainInfo }) => {
       </Head>
 
       <StyledContainer>
-        <Navbar session={session} signIn={signIn} />
+        <Navbar
+          session={session}
+          user={userInfo && userInfo.user_name}
+          signIn={signIn}
+        />
 
         <div className="heading-info">
           <div className="tag">
@@ -133,6 +139,24 @@ const Domain = ({ session, domainInfo }) => {
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);
+  let user = null;
+
+  if (session) {
+    // Fetch complete user info of logged in user
+    const users = await axios
+      .request({
+        method: "GET",
+        url: "http://localhost:5000/api/users/",
+        headers: { "Content-Type": "application/json" },
+        data: {
+          secret: "q+pXtJSG#JDN37HsE@,",
+        },
+      })
+      .then((res) => res.data)
+      .catch((err) => console.log(err));
+
+    user = users.filter((user) => user.external_id === session.user_id);
+  }
 
   // Fetching id of the domain
   const domainInfo = await axios
@@ -155,7 +179,8 @@ export async function getServerSideProps(context) {
   return {
     props: {
       session,
-      domainInfo: domainInfo[0],
+      userInfo: session ? user[0] : null,
+      domainInfo: domainInfo && domainInfo[0],
     },
   };
 }

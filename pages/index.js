@@ -116,7 +116,7 @@ export async function getServerSideProps(context) {
   let user = null;
 
   if (session) {
-    // Fetch complete user info
+    // Fetch complete user info of logged in user
     const users = await axios
       .request({
         method: "GET",

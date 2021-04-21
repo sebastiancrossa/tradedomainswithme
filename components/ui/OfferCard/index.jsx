@@ -6,6 +6,8 @@ import { AiOutlineTwitter } from "react-icons/ai";
 const OfferCard = ({ userId, domainId }) => {
   const [userInfo, setUserInfo] = useState();
 
+  console.log(userId);
+
   const fetchInfo = async () => {
     // Fetch complete user info
     const user = await axios
@@ -22,7 +24,7 @@ const OfferCard = ({ userId, domainId }) => {
   };
 
   useEffect(() => {
-    // fetchInfo();
+    fetchInfo();
   }, []);
 
   return (
