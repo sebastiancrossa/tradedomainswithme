@@ -51,7 +51,11 @@ export default function Home({ session, domains, userInfo }) {
       </Head>
 
       <StyledContainer>
-        <Navbar session={session} user={userInfo.user_name} signIn={signIn} />
+        <Navbar
+          session={session}
+          user={userInfo && userInfo.user_name}
+          signIn={signIn}
+        />
         {/* <button onClick={() => signOut()}>Sign out</button> */}
 
         <section class="text-container">

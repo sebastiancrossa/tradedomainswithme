@@ -31,7 +31,7 @@ const User = ({ session, initialDomains, userInfo }) => {
   const [newDomain, setNewDomain] = useState("");
   // ----
 
-  const isMe = session.user_id === userInfo._id;
+  const isMe = session ? session.user_id === userInfo._id : false;
   // const isMe = false;
 
   useEffect(() => {
