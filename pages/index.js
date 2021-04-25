@@ -23,13 +23,12 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
 
-  console.log(userInfo);
   console.log("swappedDomains", swappedDomains);
 
   const handleDomainSubmit = async () => {
     // Creating the new domain
     // TODO: Do some server side protection as well
-    let createdDomain = await axios
+    await axios
       .request({
         method: "POST",
         url: "http://localhost:5000/api/domains/",
@@ -86,7 +85,10 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
             <div className="swapped-list">
               {swappedDomains &&
                 swappedDomains.map((swappedDomain) => (
-                  <SwappedCard domain={swappedDomain} user={userInfo} />
+                  <SwappedCard
+                    domain={swappedDomain}
+                    user={swappedDomain.user.user}
+                  />
                 ))}
             </div>
           )}
@@ -137,6 +139,7 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
 export async function getServerSideProps(context) {
   const session = await getSession(context);
   let swappedDomains = [];
+  let swappedDomainsWithUsers = [];
   let unswappedDomains = [];
   let user = null;
 
@@ -154,9 +157,6 @@ export async function getServerSideProps(context) {
       .then((res) => res.data)
       .catch((err) => console.log(err));
 
-    // console.log(users);
-    // console.log(session);
-
     user = users.filter((user) => user.external_id === session.user_id);
   }
 
@@ -172,28 +172,44 @@ export async function getServerSideProps(context) {
     .then((res) => res.data)
     .then((fetchedDomains) =>
       fetchedDomains.map((domain) => {
-        console.log("curr domain", domain);
-        console.log(swappedDomains);
-
         if (domain.swappedWith) {
-          // if (
-          //   swappedDomains.some(
-          //     (item) =>
-          //       item.name !== domain.name ||
-          //       item.swappedWith.domain_name !== domain.name
-          //   )
-          // )
           swappedDomains.push(domain);
         } else {
           unswappedDomains.push(domain);
         }
-
-        // domain.swappedWith
-        //   ? swappedDomains.some((item) => item.name !== domain.name) &&
-        //     swappedDomains.push(domain)
-        //   : unswappedDomains.push(domain);
       })
     )
+    .then(async () => {
+      // If we do have swapped domains, fetch the users info
+      if (swappedDomains.length > 0) {
+        await Promise.all(
+          swappedDomains.map(async (swappedDomain, index) => {
+            await axios
+              .request({
+                method: "GET",
+                url: `http://localhost:5000/api/users/${swappedDomain.user_id}`,
+                data: {
+                  secret: "q+pXtJSG#JDN37HsE@,",
+                },
+              })
+              .then((res) => res.data)
+              .then((user) => {
+                console.log("fetched user", user[0]);
+                swappedDomains[index]["user"] = {
+                  user: user[0],
+                  ...swappedDomain,
+                };
+              })
+              .catch((err) =>
+                console.log(
+                  "Error while fetching swapped domain user info |",
+                  err
+                )
+              );
+          })
+        );
+      }
+    })
     .catch((err) => console.log(err));
 
   return {

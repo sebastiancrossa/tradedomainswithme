@@ -2,7 +2,7 @@ import Link from "next/link";
 import styled from "styled-components";
 
 const SwappedCard = ({ domain, user }) => {
-  console.log("swapped card domain", domain);
+  // console.log("swapped card domain", domain);
 
   return (
     <Background>
