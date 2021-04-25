@@ -135,9 +135,15 @@ const Domain = ({
           </div>
         ) : (
           <div className="heading-info">
-            <div className="tag">
-              <p>Unverified</p>
-            </div>
+            {domainInfo.isVerified ? (
+              <div className="tag verified">
+                <p>Verified</p>
+              </div>
+            ) : (
+              <div className="tag unverified">
+                <p>Unverified</p>
+              </div>
+            )}
             <h1>
               Swap offers for
               <br />
@@ -175,7 +181,7 @@ const Domain = ({
           !domainInfo.swappedWith && (
             <MakeAnOffer
               domains={domainsByCurrentUser}
-              currentDomain={domainInfo._id}
+              currentDomain={domainInfo}
             />
           )}
 
