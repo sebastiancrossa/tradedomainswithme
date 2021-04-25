@@ -19,9 +19,16 @@ const isValidDomain = require("is-valid-domain");
 
 const verifySuccess = () => toast.success("Your domain has been verified!");
 
+const getRandomNumber = (max) => {
+  return Math.floor(Math.random() * max);
+};
+
 const User = ({ session, initialDomains, userInfo }) => {
   const router = useRouter();
+  const [randNum, setRandNum] = useState(getRandomNumber(999999));
   const [isOpen, setIsOpen] = useState(false);
+
+  console.log("current session", session);
 
   // Domain-related state
   // ! this logic is ugly af, refactor once everything is working
@@ -50,12 +57,6 @@ const User = ({ session, initialDomains, userInfo }) => {
     setSwappedDomains(swappedDomains);
     setUnswappedDomains(unswappedDomains);
   }, [domains]);
-
-  // console.log("domains", domains);
-  // console.log("verified domains", verifiedDomains);
-  // console.log("unverified domains", unverifiedDomains);
-  console.log("swapped domains", swappedDomains);
-  // console.log("unswapped domains", unswappedDomains);
 
   const handleDomainAdd = async () => {
     // Creating the new domain
@@ -87,6 +88,7 @@ const User = ({ session, initialDomains, userInfo }) => {
       headers: { "Content-Type": "application/json" },
       data: {
         secret: "q+pXtJSG#JDN37HsE@,",
+        randNum,
       },
     });
 
@@ -156,10 +158,10 @@ const User = ({ session, initialDomains, userInfo }) => {
               <span style={{ fontWeight: "bold" }}>TXT Record</span> with the
               value of{" "}
               <span className="code">
-                tradedomainswithme-[your domain here]
+                tradedomainswithme-{randNum}-[your domain here]
               </span>
-              (e.g. tradedomainswithme-potentialfor.business). Once that is
-              added, keep refreshing until we are able to verify that you are
+              (e.g. tradedomainswithme-999000-potentialfor.business). Once that
+              is added, keep refreshing until we are able to verify that you are
               the owner of that domain!
             </p>
 

@@ -23,16 +23,6 @@ const MakeAnOffer = ({ domains, currentDomain }) => {
         )
       );
     }
-
-    // filteredDomains = currentDomain.swapOffersReceived.some(someOfferReceived => )
-    // filteredDomains = currentDomain.swapOffersReceived.filter((offerReceived) =>
-    //   filteredDomains.some(
-    //     (someDomain) => someDomain._id !== offerReceived.domain_id
-    //   )
-    // );
-    console.log(filteredDomains);
-    console.log(filteredDomains.length);
-    setUserDomains(filteredDomains);
   }, []);
 
   const handleCreateOffer = async () => {
