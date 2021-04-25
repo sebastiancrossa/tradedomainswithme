@@ -23,8 +23,6 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
 
-  console.log("swappedDomains", swappedDomains);
-
   const handleDomainSubmit = async () => {
     // Creating the new domain
     // TODO: Do some server side protection as well
@@ -139,7 +137,6 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
 export async function getServerSideProps(context) {
   const session = await getSession(context);
   let swappedDomains = [];
-  let swappedDomainsWithUsers = [];
   let unswappedDomains = [];
   let user = null;
 
@@ -173,7 +170,13 @@ export async function getServerSideProps(context) {
     .then((fetchedDomains) =>
       fetchedDomains.map((domain) => {
         if (domain.swappedWith) {
-          swappedDomains.push(domain);
+          if (
+            swappedDomains.length === 0 ||
+            swappedDomains.some(
+              (item) => item.swappedWith.domain_name !== domain.name
+            )
+          )
+            swappedDomains.push(domain);
         } else {
           unswappedDomains.push(domain);
         }
@@ -194,7 +197,6 @@ export async function getServerSideProps(context) {
               })
               .then((res) => res.data)
               .then((user) => {
-                console.log("fetched user", user[0]);
                 swappedDomains[index]["user"] = {
                   user: user[0],
                   ...swappedDomain,
