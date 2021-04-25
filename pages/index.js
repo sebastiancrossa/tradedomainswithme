@@ -11,10 +11,11 @@ import { Container } from "../styles";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import SwapsList from "../components/containers/SwapsList";
+import SwappedCard from "../components/ui/SwappedCard";
 
 const isValidDomain = require("is-valid-domain");
 
-export default function Home({ session, domains, userInfo }) {
+export default function Home({ session, domains, swappedDomains, userInfo }) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [newDomain, setNewDomain] = useState("");
@@ -23,6 +24,7 @@ export default function Home({ session, domains, userInfo }) {
   const onCloseModal = () => setIsOpen(false);
 
   console.log(userInfo);
+  console.log("swappedDomains", swappedDomains);
 
   const handleDomainSubmit = async () => {
     // Creating the new domain
@@ -75,6 +77,21 @@ export default function Home({ session, domains, userInfo }) {
 
         <SwapsList domains={domains} />
 
+        <section>
+          <h2 style={{ marginBottom: "1rem" }}>Recently swapped domains</h2>
+
+          {swappedDomains && swappedDomains.length == 0 ? (
+            <p>No swaps done just yet!</p>
+          ) : (
+            <div className="swapped-list">
+              {swappedDomains &&
+                swappedDomains.map((swappedDomain) => (
+                  <SwappedCard domain={swappedDomain} user={userInfo} />
+                ))}
+            </div>
+          )}
+        </section>
+
         <ReactModal
           isOpen={isOpen}
           onRequestClose={onCloseModal}
@@ -119,7 +136,8 @@ export default function Home({ session, domains, userInfo }) {
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);
-  let domains = null;
+  let swappedDomains = [];
+  let unswappedDomains = [];
   let user = null;
 
   if (session) {
@@ -143,7 +161,7 @@ export async function getServerSideProps(context) {
   }
 
   // Fetch all domains from user
-  domains = await axios
+  await axios
     .request({
       method: "GET",
       url: `http://localhost:5000/api/domains/`,
@@ -152,12 +170,37 @@ export async function getServerSideProps(context) {
       },
     })
     .then((res) => res.data)
+    .then((fetchedDomains) =>
+      fetchedDomains.map((domain) => {
+        console.log("curr domain", domain);
+        console.log(swappedDomains);
+
+        if (domain.swappedWith) {
+          // if (
+          //   swappedDomains.some(
+          //     (item) =>
+          //       item.name !== domain.name ||
+          //       item.swappedWith.domain_name !== domain.name
+          //   )
+          // )
+          swappedDomains.push(domain);
+        } else {
+          unswappedDomains.push(domain);
+        }
+
+        // domain.swappedWith
+        //   ? swappedDomains.some((item) => item.name !== domain.name) &&
+        //     swappedDomains.push(domain)
+        //   : unswappedDomains.push(domain);
+      })
+    )
     .catch((err) => console.log(err));
 
   return {
     props: {
       session,
-      domains: domains,
+      domains: unswappedDomains,
+      swappedDomains,
       userInfo: session ? user[0] : null,
     },
   };
@@ -200,5 +243,19 @@ const StyledContainer = styled(Container)`
 
     padding: 2rem;
     border-radius: 10px;
+  }
+
+  .swapped-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 3rem;
+
+    @media only screen and (max-width: 1024px) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media only screen and (max-width: 425px) {
+      grid-template-columns: 1fr;
+    }
   }
 `;

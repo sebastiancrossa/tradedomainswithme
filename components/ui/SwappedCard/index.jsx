@@ -13,7 +13,7 @@ const SwappedCard = ({ domain, user }) => {
               src={user.profile_img}
               alt={`Profile image for Twitter user @${user.user_name}}`}
             />
-            <p>@{user.user_name} swapped the domain</p>
+            <p>@{user.user_name} swapped</p>
           </div>
         </a>
       </Link>
