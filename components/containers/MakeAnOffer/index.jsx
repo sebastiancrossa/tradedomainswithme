@@ -14,11 +14,23 @@ const MakeAnOffer = ({ domains, currentDomain }) => {
   useEffect(() => {
     // Check if any of the domains of the user are either already swapped or an offer has already been made
     let filteredDomains = domains.filter((domain) => !domain.swappedWith);
-    filteredDomains = currentDomain.swapOffersReceived.filter((offerReceived) =>
-      filteredDomains.some(
-        (someDomain) => someDomain._id !== offerReceived.domain_id
-      )
-    );
+    console.log("filtered 1", filteredDomains);
+
+    if (currentDomain.swapOffersReceived.length > 0) {
+      filteredDomains = filteredDomains.filter((domain) =>
+        currentDomain.swapOffersReceived.some(
+          (someOfferReceived) => someOfferReceived.domain_id !== domain._id
+        )
+      );
+    }
+
+    // filteredDomains = currentDomain.swapOffersReceived.some(someOfferReceived => )
+    // filteredDomains = currentDomain.swapOffersReceived.filter((offerReceived) =>
+    //   filteredDomains.some(
+    //     (someDomain) => someDomain._id !== offerReceived.domain_id
+    //   )
+    // );
+    console.log(filteredDomains);
     console.log(filteredDomains.length);
     setUserDomains(filteredDomains);
   }, []);

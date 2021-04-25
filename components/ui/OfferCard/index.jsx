@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import axios from "axios";
 import styled from "styled-components";
+
+import ReactModal from "react-modal";
 import { BiCheck } from "react-icons/bi";
 import { AiOutlineTwitter } from "react-icons/ai";
 
 const OfferCard = ({ isMe, userImg, userName, domainId, parentDomainId }) => {
+  const router = useRouter();
   const [domainInfo, setDomainInfo] = useState();
+  const [isOpen, setIsOpen] = useState(false);
 
   const fetchInfo = async () => {
     await axios
@@ -26,9 +31,6 @@ const OfferCard = ({ isMe, userImg, userName, domainId, parentDomainId }) => {
       .catch((err) => console.log(err));
   };
 
-  console.log(domainId);
-  console.log(domainInfo);
-
   const handleDomainSwap = async () => {
     await axios
       .request({
@@ -41,6 +43,7 @@ const OfferCard = ({ isMe, userImg, userName, domainId, parentDomainId }) => {
         },
       })
       .then((res) => res.data)
+      .then(() => router.reload())
       .then((data) => console.log(data))
       .catch((err) => console.log(err));
   };
@@ -48,8 +51,6 @@ const OfferCard = ({ isMe, userImg, userName, domainId, parentDomainId }) => {
   useEffect(() => {
     fetchInfo();
   }, []);
-
-  console.log("domainInfo", domainInfo);
 
   return (
     <Container>
@@ -103,7 +104,7 @@ const OfferCard = ({ isMe, userImg, userName, domainId, parentDomainId }) => {
             />
             <p>Send a DM</p>
           </a>
-          <button className="success" onClick={() => handleDomainSwap()}>
+          <button className="success" onClick={() => setIsOpen(true)}>
             <BiCheck
               size={25}
               style={{ stroke: "white", marginRight: "0.5rem" }}
@@ -112,9 +113,54 @@ const OfferCard = ({ isMe, userImg, userName, domainId, parentDomainId }) => {
           </button>
         </div>
       )}
+
+      <ReactModal
+        isOpen={isOpen}
+        onRequestClose={() => setIsOpen(false)}
+        shouldCloseOnOverlayClick
+        shouldCloseOnEsc
+        style={{
+          overlay: {
+            backgroundColor: "rgba(255, 255, 255, 0.7)",
+          },
+          content: {
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            border: "none",
+            boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+            maxWidth: "25rem",
+            margin: "auto auto",
+            height: "fit-content",
+            textAlign: "center",
+          },
+        }}
+      >
+        <ModalContainer>
+          <h2>Are you sure you want to mark this domain as swapped?</h2>
+          <p style={{ marginBottom: "1rem" }}>
+            Keep in mind that you should only mark this domain as swapped if you
+            have already swapped the domain with the other user! If you have,
+            congrats and go ahead and mark this as swapped :)
+          </p>
+
+          <button onClick={() => handleDomainSwap()}>
+            Mark domain as swapped
+          </button>
+        </ModalContainer>
+      </ReactModal>
     </Container>
   );
 };
+
+const ModalContainer = styled.div`
+  button {
+    width: 100%;
+    padding: 0.5rem;
+    background-color: #43ccb5;
+  }
+`;
 
 const Container = styled.div`
   display: grid;
