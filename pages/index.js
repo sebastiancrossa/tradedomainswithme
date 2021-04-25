@@ -1,5 +1,7 @@
-import { signIn, signOut, useSession } from "next-auth/client";
+import { signIn, signOut, getSession } from "next-auth/client";
 import { useState } from "react";
+import { useRouter } from "next/router";
+import axios from "axios";
 import Head from "next/head";
 import ReactModal from "react-modal";
 import styled from "styled-components";
@@ -10,12 +12,38 @@ import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import SwapsList from "../components/containers/SwapsList";
 
-export default function Home() {
-  const [session, loading] = useSession();
+const isValidDomain = require("is-valid-domain");
+
+export default function Home({ session, domains, userInfo }) {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [newDomain, setNewDomain] = useState("");
 
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
+
+  console.log(userInfo);
+
+  const handleDomainSubmit = async () => {
+    // Creating the new domain
+    // TODO: Do some server side protection as well
+    let createdDomain = await axios
+      .request({
+        method: "POST",
+        url: "http://localhost:5000/api/domains/",
+        headers: { "Content-Type": "application/json" },
+        data: {
+          secret: "q+pXtJSG#JDN37HsE@,",
+          user_id: session.user_id,
+          name: newDomain,
+        },
+      })
+      .then((res) => res.data)
+      .catch((err) => console.log(err));
+
+    onCloseModal();
+    router.push(`/${userInfo.user_name.toLowerCase()}`);
+  };
 
   return (
     <>
@@ -25,18 +53,27 @@ export default function Home() {
       </Head>
 
       <StyledContainer>
-        <Navbar session={session} signIn={signIn} />
-        <button onClick={() => signOut()}>Sign out</button>
+        <Navbar
+          session={session}
+          user={userInfo && userInfo.user_name}
+          signIn={signIn}
+        />
+        {/* <button onClick={() => signOut()}>Sign out</button> */}
 
         <section class="text-container">
           <h1>tradedomainswith.me</h1>
           <h2 style={{ marginBottom: "1rem", fontWeight: "400" }}>
             The easiest way to find people to trade domains with.
           </h2>
-          <button onClick={onOpenModal}>Swap your first domain</button>
+
+          {session ? (
+            <button onClick={onOpenModal}>Swap your first domain</button>
+          ) : (
+            <button onClick={signIn}>Swap your first domain</button>
+          )}
         </section>
 
-        <SwapsList />
+        <SwapsList domains={domains} />
 
         <ReactModal
           isOpen={isOpen}
@@ -59,8 +96,18 @@ export default function Home() {
         >
           <ModalContainer>
             <h2>Add a new domain</h2>
-            <input type="text" placeholder="example.com" />
-            <button>Add my domain</button>
+            <input
+              type="text"
+              placeholder="example.com"
+              value={newDomain}
+              onChange={(e) => setNewDomain(e.target.value)}
+            />
+            <button
+              onClick={() => handleDomainSubmit()}
+              disabled={!isValidDomain(newDomain)}
+            >
+              Add my domain
+            </button>
           </ModalContainer>
         </ReactModal>
 
@@ -68,6 +115,52 @@ export default function Home() {
       </StyledContainer>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+  let domains = null;
+  let user = null;
+
+  if (session) {
+    // Fetch complete user info of logged in user
+    const users = await axios
+      .request({
+        method: "GET",
+        url: "http://localhost:5000/api/users/",
+        headers: { "Content-Type": "application/json" },
+        data: {
+          secret: "q+pXtJSG#JDN37HsE@,",
+        },
+      })
+      .then((res) => res.data)
+      .catch((err) => console.log(err));
+
+    // console.log(users);
+    // console.log(session);
+
+    user = users.filter((user) => user.external_id === session.user_id);
+  }
+
+  // Fetch all domains from user
+  domains = await axios
+    .request({
+      method: "GET",
+      url: `http://localhost:5000/api/domains/`,
+      data: {
+        secret: "q+pXtJSG#JDN37HsE@,",
+      },
+    })
+    .then((res) => res.data)
+    .catch((err) => console.log(err));
+
+  return {
+    props: {
+      session,
+      domains: domains,
+      userInfo: session ? user[0] : null,
+    },
+  };
 }
 
 const ModalContainer = styled.div`
@@ -85,6 +178,12 @@ const ModalContainer = styled.div`
   button {
     width: 100%;
     padding: 0.5rem;
+
+    transition: all 0.15s ease-in;
+
+    &:disabled {
+      background-color: #0c0066;
+    }
   }
 `;
 

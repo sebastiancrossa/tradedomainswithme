@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { signIn, getSession } from "next-auth/client";
 import Head from "next/head";
+import axios from "axios";
+
 import styled from "styled-components";
 
 import ReactModal from "react-modal";
@@ -10,12 +13,40 @@ import { Container } from "../../styles";
 import MakeAnOffer from "../../components/containers/MakeAnOffer";
 import OffersList from "../../components/containers/OffersList";
 
-const Domain = () => {
+const Domain = ({
+  session,
+  userInfo,
+  domainInfo,
+  domainOwner,
+  domainsByCurrentUser,
+}) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
+  // console.log("userInfo on domain", userInfo);
+  console.log("domainInfo", domainInfo);
+  console.log("domainOwner", domainOwner);
+
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
+
+  const isMe = session ? session.user_id === domainOwner.external_id : false;
+
+  const handleDomainDelete = async () => {
+    await axios
+      .request({
+        method: "DELETE",
+        url: `http://localhost:5000/api/domains/${domainInfo._id}`,
+        headers: { "Content-Type": "application/json" },
+        data: {
+          secret: "q+pXtJSG#JDN37HsE@,",
+        },
+      })
+      .then((res) => res.data)
+      .catch((err) => console.log(err));
+
+    router.push("/");
+  };
 
   return (
     <>
@@ -25,7 +56,11 @@ const Domain = () => {
       </Head>
 
       <StyledContainer>
-        <Navbar />
+        <Navbar
+          session={session}
+          user={userInfo && userInfo.user_name}
+          signIn={signIn}
+        />
 
         <div className="heading-info">
           <div className="tag">
@@ -48,17 +83,32 @@ const Domain = () => {
             <p style={{ marginRight: "0.5rem" }}>a domain owned by</p>
             <div className="user-content">
               <img
-                src="https://avatars.githubusercontent.com/u/20131547?v=4"
+                src={domainOwner && domainOwner.profile_img}
                 alt="User profile image"
               />
-              <p>Sebastian Crossa</p>
+              <p>{domainOwner && domainOwner.user_name}</p>
             </div>
           </div>
-          <button className="close">Close swap offer</button>
+
+          {isMe && (
+            <button className="close" onClick={() => onOpenModal()}>
+              Delete this domain
+            </button>
+          )}
         </div>
 
-        <MakeAnOffer />
-        <OffersList />
+        {session && session.user_id !== (domainInfo && domainInfo.user_id) && (
+          <MakeAnOffer
+            domains={domainsByCurrentUser}
+            currentDomain={domainInfo._id}
+          />
+        )}
+
+        <OffersList
+          isMe={isMe}
+          offers={domainInfo && domainInfo.swapOffersReceived}
+          parentDomainId={domainInfo._id}
+        />
 
         <Footer />
 
@@ -82,15 +132,107 @@ const Domain = () => {
           }}
         >
           <ModalContainer>
-            <h2>Are you sure you want to close </h2>
-            <input type="text" placeholder="example.com" />
-            <button>Add my domain</button>
+            <h2>Are you sure you want to delete this domain?</h2>
+            <p style={{ marginBottom: "1rem" }}>
+              Deleting this domain will close the swap offer and remove all of
+              the received swap offers as well. You will still be able to add
+              the domain back in the future if you ever change your mind.
+            </p>
+
+            <div class="buttons">
+              <button
+                className="remove-btn"
+                onClick={() => handleDomainDelete()}
+              >
+                Remove domain
+              </button>
+              <button className="close-btn" onClick={onCloseModal}>
+                Close
+              </button>
+            </div>
           </ModalContainer>
         </ReactModal>
       </StyledContainer>
     </>
   );
 };
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+  let user = null;
+  let localDomainInfo;
+  let localDomainOwner;
+  let domainsByCurrentUser = [];
+
+  if (session) {
+    // Fetch complete user info of logged in user
+    const users = await axios
+      .request({
+        method: "GET",
+        url: "http://localhost:5000/api/users/",
+        headers: { "Content-Type": "application/json" },
+        data: {
+          secret: "q+pXtJSG#JDN37HsE@,",
+        },
+      })
+      .then((res) => res.data)
+      .catch((err) => console.log(err));
+
+    user = users.filter((user) => user.external_id === session.user_id);
+  }
+
+  // Fetching id of the domain
+  await axios
+    .request({
+      method: "GET",
+      url: "http://localhost:5000/api/domains/",
+      headers: { "Content-Type": "application/json" },
+      data: {
+        secret: "q+pXtJSG#JDN37HsE@,",
+      },
+    })
+    .then((res) => res.data)
+    .then((domains) => {
+      domains.map((domain) => {
+        if (domain.user_id === session.user_id)
+          domainsByCurrentUser.push(domain);
+      });
+
+      // console.log(domains, context.query.domain);
+      return domains.filter((domain) => domain.name === context.query.domain);
+    })
+    .then(async (info) => {
+      localDomainInfo = info;
+      console.log(info);
+      await axios
+        .request({
+          method: "GET",
+          url: `http://localhost:5000/api/users/${info[0].user_id}`,
+          headers: { "Content-Type": "application/json" },
+          data: {
+            secret: "q+pXtJSG#JDN37HsE@,",
+          },
+        })
+        .then((res) => res.data)
+        .then((ownerInfo) => {
+          localDomainOwner = ownerInfo;
+        })
+        .catch((err) => console.log(err));
+    })
+    .catch((err) => console.log(err));
+
+  console.log("domainsByCurrentUser", domainsByCurrentUser);
+
+  return {
+    props: {
+      session,
+      userInfo: session ? user[0] : null,
+      domainInfo: localDomainInfo && localDomainInfo[0],
+      domainOwner: localDomainOwner && localDomainOwner[0],
+      domainsByCurrentUser,
+    },
+  };
+}
 
 const ModalContainer = styled.div`
   input {
@@ -103,6 +245,23 @@ const ModalContainer = styled.div`
     border-radius: 5px;
 
     text-align: center;
+  }
+
+  .remove-btn {
+    background-color: #ec6559;
+    border: 2px solid #ec6559;
+  }
+
+  .buttons {
+    display: grid;
+    grid-auto-columns: auto;
+    grid-gap: 0.5rem;
+  }
+
+  .close-btn {
+    background: none;
+    border: 2px solid #5c45ff;
+    color: #5c45ff;
   }
 
   button {

@@ -1,38 +1,59 @@
+import Link from "next/link";
 import styled from "styled-components";
 
-const SwappedCard = () => {
+const SwappedCard = ({ domain, user }) => {
+  console.log("swapped card domain", domain);
+
   return (
     <Background>
-      <div className="user-info">
-        <img
-          src="https://avatars.githubusercontent.com/u/20131547?v=4"
-          alt="User profile image"
-        />
-        <p>Sebastian Crossa swapped</p>
-      </div>
+      <Link href={`/${user.user_name}`} passHref>
+        <a>
+          <div className="user-info">
+            <img
+              src={user.profile_img}
+              alt={`Profile image for Twitter user @${user.user_name}}`}
+            />
+            <p>@{user.user_name} swapped the domain</p>
+          </div>
+        </a>
+      </Link>
 
       <div>
         <div className="domain">
-          <div className="tag verified">Verified</div>
-          <p>potentialfor.business</p>
+          {domain.isVerified ? (
+            <div className="tag verified">Verified</div>
+          ) : (
+            <div className="tag unverified">Unverified</div>
+          )}
+
+          <p>{domain && domain.name}</p>
         </div>
         <p id="unaligned-circle">for</p>
         <div className="domain">
-          <div className="tag verified">Verified</div>
-          <p>nwtn.io</p>
+          {domain.swappedWith.domain_verified ? (
+            <div className="tag verified">Verified</div>
+          ) : (
+            <div className="tag unverified">Unverified</div>
+          )}
+
+          <p>{domain.swappedWith && domain.swappedWith.domain_name}</p>
         </div>
       </div>
 
-      <div className="swapped-user">
-        <p>with</p>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <img
-            src="https://avatars.githubusercontent.com/u/20131547?v=4"
-            alt="User profile image"
-          />
-          <p>Jonathan Chávez</p>
-        </div>
-      </div>
+      <Link href={`/${domain.swappedWith.user_name}`} passHref>
+        <a>
+          <div className="swapped-user">
+            <p>with</p>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <img
+                src={domain.swappedWith.user_img}
+                alt={`Profile image for Twitter user @${domain.swappedWith.user_name}}`}
+              />
+              <p>@{domain.swappedWith.user_name}</p>
+            </div>
+          </div>
+        </a>
+      </Link>
     </Background>
   );
 };
@@ -75,6 +96,11 @@ const Background = styled.div`
     color: #4da769;
   }
 
+  .unverified {
+    background-color: #fbf1eb;
+    color: #f1a16f;
+  }
+
   .swapped-user {
     display: flex;
     align-items: center;
@@ -82,6 +108,7 @@ const Background = styled.div`
 
     font-size: 1.1rem;
     font-weight: 600;
+    color: black;
 
     p {
       margin-right: 1rem;
@@ -94,10 +121,9 @@ const Background = styled.div`
 
     font-size: 1.1rem;
     font-weight: 600;
+    color: black;
 
     margin: 0 auto 0.5rem auto;
-
-    margin-bottom: 0.5rem;
   }
 
   .domain {

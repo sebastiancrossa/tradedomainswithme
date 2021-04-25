@@ -1,12 +1,25 @@
 import styled from "styled-components";
 import OfferCard from "../../ui/OfferCard";
 
-const OffersList = () => {
+const OffersList = ({ isMe, offers, parentDomainId }) => {
+  console.log(offers);
+
   return (
     <Background>
-      <div class="offer-list">
-        <OfferCard user="Sebastian Crossa" domain="kisana.mx" />
-        <OfferCard user="Jonathan Chavez" domain="nwtn.io" />
+      <div className="offer-list">
+        {offers && offers.length === 0 && (
+          <p>This domain doesn't have any swap offers yet!</p>
+        )}
+        {offers &&
+          offers.map(({ user_img, user_name, domain_id }) => (
+            <OfferCard
+              isMe={isMe}
+              userImg={user_img}
+              userName={user_name}
+              domainId={domain_id}
+              parentDomainId={parentDomainId}
+            />
+          ))}
       </div>
     </Background>
   );
@@ -17,6 +30,10 @@ const Background = styled.div`
     display: grid;
     grid-template-columns: auto;
     grid-gap: 2rem;
+  }
+
+  p {
+    margin: 0 auto;
   }
 `;
 

@@ -1,17 +1,22 @@
 import styled from "styled-components";
 import TradeCard from "../../ui/TradeCard";
 
-const SwapsList = () => {
+const SwapsList = ({ domains }) => {
   return (
     <Background>
       <h2>Open swap offers</h2>
 
-      <div class="offers-list">
-        <TradeCard />
-        <TradeCard />
-        <TradeCard />
-        <TradeCard />
-      </div>
+      {!domains && (
+        <p>No domains have been added just yet! Be the first one to add.</p>
+      )}
+
+      {domains && domains.length == 0 ? (
+        <p>No domains have been added just yet!</p>
+      ) : (
+        <div className="offers-list">
+          {domains && domains.map((domain) => <TradeCard domain={domain} />)}
+        </div>
+      )}
     </Background>
   );
 };

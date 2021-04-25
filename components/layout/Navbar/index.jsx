@@ -1,9 +1,7 @@
 import Link from "next/link";
 import styled from "styled-components";
 
-const Navbar = ({ session, signIn }) => {
-  console.log("User session: ", session);
-
+const Navbar = ({ session, user, signIn }) => {
   return (
     <Background>
       <Link href="/" passHref>
@@ -13,7 +11,7 @@ const Navbar = ({ session, signIn }) => {
       </Link>
       {!session && <button onClick={() => signIn()}>Sign in</button>}
       {session && (
-        <Link href={`/sebastiancrossa`} passHref>
+        <Link href={`/${user}`} passHref>
           <a style={{ color: "black" }}>
             <div className="user-info">
               <img src={session.user.image} alt="User profile image" />
@@ -30,6 +28,8 @@ const Background = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  padding-top: 0.5rem;
 
   font-weight: 600;
 

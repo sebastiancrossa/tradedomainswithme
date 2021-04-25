@@ -14,6 +14,7 @@ const Footer = () => {
 const Background = styled.div`
   margin-top: 3rem;
   text-align: center;
+  padding: 1rem;
 `;
 
 export default Footer;

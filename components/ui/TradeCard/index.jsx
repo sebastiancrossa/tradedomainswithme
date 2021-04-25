@@ -1,30 +1,70 @@
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import axios from "axios";
 import styled from "styled-components";
 
 import { BsArrowRightShort } from "react-icons/bs";
 
-const OfferCard = () => {
+const OfferCard = ({ domain }) => {
+  const [userInfo, setUserInfo] = useState();
+
+  // Getting the user ino for each card
+  const fetchUserInfo = async () => {
+    await axios
+      .request({
+        method: "GET",
+        url: `http://localhost:5000/api/users/${domain.user_id}`,
+        headers: { "Content-Type": "application/json" },
+        data: {
+          secret: "q+pXtJSG#JDN37HsE@,",
+        },
+      })
+      .then((res) => res.data)
+      .then((user) => setUserInfo(user[0]))
+      .catch((err) => console.log(err));
+  };
+
+  // console.log(userInfo);
+  console.log(userInfo);
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, []);
+
   return (
     <Background>
-      <div className="user-info">
-        <img
-          src="https://avatars.githubusercontent.com/u/20131547?v=4"
-          alt="User profile image"
-        />
-        <p>Sebastian Crossa wants to trade</p>
-      </div>
+      <Link href={`/${userInfo && userInfo.user_name}`} passHref>
+        <a>
+          <div className="user-info">
+            <img
+              src={
+                userInfo
+                  ? userInfo.profile_img
+                  : "https://st3.depositphotos.com/1767687/16607/v/380/depositphotos_166074422-stock-illustration-default-avatar-profile-icon-grey.jpg"
+              }
+              alt="User profile image"
+            />
+            <p>@{userInfo && userInfo.user_name} wants to trade</p>
+          </div>
+        </a>
+      </Link>
 
       <div className="domain">
-        <div className="tag unverified">Unverified</div>
-        <p>potentialfor.business</p>
+        {domain.isVerified ? (
+          <div className="tag verified">Verified</div>
+        ) : (
+          <div className="tag unverified">Unverified</div>
+        )}
+
+        <p>{domain && domain.name}</p>
       </div>
 
       <div class="trade-info">
         <p>
-          <span>8</span> swap offers
+          <span>{domain && domain.swapOffersReceived.length}</span> swap offers
         </p>
 
-        <Link href="/trade/potentialfor.business" passHref>
+        <Link href={`/trade/${domain && domain.name}`} passHref>
           <a>
             <button>
               <p>Check out offers</p>
@@ -58,6 +98,11 @@ const Background = styled.div`
     padding: 0.2rem 1rem;
   }
 
+  .verified {
+    background-color: #d9f6e3;
+    color: #4da769;
+  }
+
   .unverified {
     background-color: #fbf1eb;
     color: #f1a16f;
@@ -69,6 +114,7 @@ const Background = styled.div`
 
     font-size: 1.1rem;
     font-weight: 600;
+    color: black;
 
     margin: 0 auto 0.5rem auto;
 
