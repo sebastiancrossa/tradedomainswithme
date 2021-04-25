@@ -107,6 +107,7 @@ const Domain = ({
         <OffersList
           isMe={isMe}
           offers={domainInfo && domainInfo.swapOffersReceived}
+          parentDomainId={domainInfo._id}
         />
 
         <Footer />

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import OfferCard from "../../ui/OfferCard";
 
-const OffersList = ({ isMe, offers }) => {
+const OffersList = ({ isMe, offers, parentDomainId }) => {
   console.log(offers);
 
   return (
@@ -17,6 +17,7 @@ const OffersList = ({ isMe, offers }) => {
               userImg={user_img}
               userName={user_name}
               domainId={domain_id}
+              parentDomainId={parentDomainId}
             />
           ))}
       </div>

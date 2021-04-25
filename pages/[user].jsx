@@ -54,7 +54,7 @@ const User = ({ session, initialDomains, userInfo }) => {
   // console.log("domains", domains);
   // console.log("verified domains", verifiedDomains);
   // console.log("unverified domains", unverifiedDomains);
-  // console.log("swapped domains", swappedDomains);
+  console.log("swapped domains", swappedDomains);
   // console.log("unswapped domains", unswappedDomains);
 
   const handleDomainAdd = async () => {
@@ -206,7 +206,7 @@ const User = ({ session, initialDomains, userInfo }) => {
           ) : (
             <div className="swapped-list">
               {swappedDomains.map((swappedDomain) => (
-                <SwappedCard domain={swappedDomain} />
+                <SwappedCard domain={swappedDomain} user={userInfo} />
               ))}
             </div>
           )}

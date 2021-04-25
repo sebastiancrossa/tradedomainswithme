@@ -5,9 +5,8 @@ import styled from "styled-components";
 import { BiCheck } from "react-icons/bi";
 import { AiOutlineTwitter } from "react-icons/ai";
 
-const OfferCard = ({ isMe, userImg, userName, domainId }) => {
+const OfferCard = ({ isMe, userImg, userName, domainId, parentDomainId }) => {
   const [domainInfo, setDomainInfo] = useState();
-  console.log(domainId);
 
   const fetchInfo = async () => {
     await axios
@@ -27,7 +26,24 @@ const OfferCard = ({ isMe, userImg, userName, domainId }) => {
       .catch((err) => console.log(err));
   };
 
-  const handleDomainSwap = async () => {};
+  console.log(domainId);
+  console.log(domainInfo);
+
+  const handleDomainSwap = async () => {
+    await axios
+      .request({
+        method: "PUT",
+        url: `http://localhost:5000/api/domains/swap/${parentDomainId}`,
+        headers: { "Content-Type": "application/json" },
+        data: {
+          secret: "q+pXtJSG#JDN37HsE@,",
+          swapWithDomainId: domainId,
+        },
+      })
+      .then((res) => res.data)
+      .then((data) => console.log(data))
+      .catch((err) => console.log(err));
+  };
 
   useEffect(() => {
     fetchInfo();
