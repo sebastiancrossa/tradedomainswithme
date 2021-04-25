@@ -56,6 +56,7 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
           session={session}
           user={userInfo && userInfo.user_name}
           signIn={signIn}
+          signOut={signOut}
         />
         {/* <button onClick={() => signOut()}>Sign out</button> */}
 
@@ -99,9 +100,13 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
           shouldCloseOnEsc
           style={{
             overlay: {
-              backgroundColor: "rgba(255, 255, 255, 0.7)",
+              backgroundColor: "rgba(255, 255, 255, 0.8)",
             },
             content: {
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
               border: "none",
               boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
               maxWidth: "25rem",

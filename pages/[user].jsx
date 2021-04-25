@@ -112,6 +112,7 @@ const User = ({ session, initialDomains, userInfo }) => {
           session={session}
           user={userInfo && userInfo.user_name}
           signIn={signIn}
+          signOut={signOut}
         />
 
         <div className="user-container">
@@ -140,12 +141,6 @@ const User = ({ session, initialDomains, userInfo }) => {
           <div class="open">{unswappedDomains.length} open swap offers</div>
           <div class="traded">{swappedDomains.length} domains swaped</div>
         </div>
-
-        {isMe && (
-          <button class="signout-btn" onClick={signOut}>
-            Sign out
-          </button>
-        )}
 
         {isMe && unverifiedDomains.length > 0 && (
           <section>
@@ -222,6 +217,10 @@ const User = ({ session, initialDomains, userInfo }) => {
               backgroundColor: "rgba(255, 255, 255, 0.7)",
             },
             content: {
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
               border: "none",
               boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
               maxWidth: "25rem",
@@ -273,10 +272,6 @@ export async function getServerSideProps(context) {
   const user = users.filter(
     (user) => user.user_name.toLowerCase() === context.query.user.toLowerCase()
   );
-
-  // console.log("users", users);
-  // console.log("user", user);
-  // console.log("session", session);
 
   // Fetch domains from user
   const domains = await axios

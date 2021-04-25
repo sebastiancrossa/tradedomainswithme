@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { signIn, getSession } from "next-auth/client";
+import { signIn, signOut, getSession } from "next-auth/client";
 import Head from "next/head";
 import axios from "axios";
 
@@ -22,10 +22,6 @@ const Domain = ({
 }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-
-  // console.log("userInfo on domain", userInfo);
-  console.log("domainInfo", domainInfo);
-  console.log("domainOwner", domainOwner);
 
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
@@ -60,6 +56,7 @@ const Domain = ({
           session={session}
           user={userInfo && userInfo.user_name}
           signIn={signIn}
+          signOut={signOut}
         />
 
         <div className="heading-info">
@@ -122,6 +119,10 @@ const Domain = ({
               backgroundColor: "rgba(255, 255, 255, 0.7)",
             },
             content: {
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
               border: "none",
               boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
               maxWidth: "25rem",
