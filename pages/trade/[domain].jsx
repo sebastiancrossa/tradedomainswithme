@@ -26,6 +26,8 @@ const Domain = ({
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
 
+  console.log(domainInfo);
+
   const isMe = session ? session.user_id === domainOwner.external_id : false;
 
   const handleDomainDelete = async () => {
@@ -59,53 +61,131 @@ const Domain = ({
           signOut={signOut}
         />
 
-        <div className="heading-info">
-          <div className="tag">
-            <p>Unverified</p>
-          </div>
-          <h1>
-            Swap offers for
-            <br />
-            <span className="domain">{router.query.domain}</span>
-          </h1>
+        {domainInfo && domainInfo.swappedWith ? (
+          <div className="heading-info">
+            <div>
+              {domainInfo.isVerified ? (
+                <div className="tag verified">
+                  <p>Verified</p>
+                </div>
+              ) : (
+                <div className="tag unverified">
+                  <p>Unverified</p>
+                </div>
+              )}
+              <h1>
+                <span className="domain">{router.query.domain}</span>
+              </h1>
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              marginBottom: "1rem",
-            }}
-          >
-            <p style={{ marginRight: "0.5rem" }}>a domain owned by</p>
-            <div className="user-content">
-              <img
-                src={domainOwner && domainOwner.profile_img}
-                alt="User profile image"
-              />
-              <p>{domainOwner && domainOwner.user_name}</p>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginBottom: "1rem",
+                }}
+              >
+                <p style={{ marginRight: "0.5rem" }}>a domain owned by</p>
+                <div className="user-content">
+                  <img
+                    src={domainOwner && domainOwner.profile_img}
+                    alt="User profile image"
+                  />
+                  <p>{domainOwner && domainOwner.user_name}</p>
+                </div>
+              </div>
+            </div>
+
+            <h1 style={{ padding: "2rem 0" }}>swapped with</h1>
+
+            <div>
+              {domainInfo.swappedWith.domain_verified ? (
+                <div className="tag verified">
+                  <p>Verified</p>
+                </div>
+              ) : (
+                <div className="tag unverified">
+                  <p>Unverified</p>
+                </div>
+              )}
+              <h1>
+                <span className="domain">
+                  {domainInfo.swappedWith.domain_name}
+                </span>
+              </h1>
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginBottom: "1rem",
+                }}
+              >
+                <p style={{ marginRight: "0.5rem" }}>a domain owned by</p>
+                <div className="user-content">
+                  <img
+                    src={domainInfo.swappedWith.user_img}
+                    alt="User profile image"
+                  />
+                  <p>{domainInfo.swappedWith.user_name}</p>
+                </div>
+              </div>
             </div>
           </div>
+        ) : (
+          <div className="heading-info">
+            <div className="tag">
+              <p>Unverified</p>
+            </div>
+            <h1>
+              Swap offers for
+              <br />
+              <span className="domain">{router.query.domain}</span>
+            </h1>
 
-          {isMe && (
-            <button className="close" onClick={() => onOpenModal()}>
-              Delete this domain
-            </button>
-          )}
-        </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: "1rem",
+              }}
+            >
+              <p style={{ marginRight: "0.5rem" }}>a domain owned by</p>
+              <div className="user-content">
+                <img
+                  src={domainOwner && domainOwner.profile_img}
+                  alt="User profile image"
+                />
+                <p>{domainOwner && domainOwner.user_name}</p>
+              </div>
+            </div>
 
-        {session && session.user_id !== (domainInfo && domainInfo.user_id) && (
-          <MakeAnOffer
-            domains={domainsByCurrentUser}
-            currentDomain={domainInfo._id}
-          />
+            {isMe && (
+              <button className="close" onClick={() => onOpenModal()}>
+                Delete this domain
+              </button>
+            )}
+          </div>
         )}
 
-        <OffersList
-          isMe={isMe}
-          offers={domainInfo && domainInfo.swapOffersReceived}
-          parentDomainId={domainInfo._id}
-        />
+        {session &&
+          session.user_id !== (domainInfo && domainInfo.user_id) &&
+          !domainInfo.swappedWith && (
+            <MakeAnOffer
+              domains={domainsByCurrentUser}
+              currentDomain={domainInfo._id}
+            />
+          )}
+
+        {domainInfo && !domainInfo.swappedWith && (
+          <OffersList
+            isMe={isMe}
+            offers={domainInfo && domainInfo.swapOffersReceived}
+            parentDomainId={domainInfo._id}
+          />
+        )}
 
         <Footer />
 
@@ -280,19 +360,24 @@ const StyledContainer = styled(Container)`
   }
 
   .tag {
-    background-color: #fbf1eb;
-    color: #f1a16f;
-
     width: fit-content;
     margin: 0 auto 0.5rem auto;
 
     font-size: 1rem;
+    font-weight: 600;
 
     border-radius: 50rem;
     padding: 0.2rem 1rem;
+  }
 
-    font-weight: 600;
-    border-radius: 50rem;
+  .verified {
+    background-color: #d9f6e3;
+    color: #4da769;
+  }
+
+  .unverified {
+    background-color: #fbf1eb;
+    color: #f1a16f;
   }
 
   .heading-info {
