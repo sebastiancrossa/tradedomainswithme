@@ -1,16 +1,24 @@
 import styled from "styled-components";
 import OfferCard from "../../ui/OfferCard";
 
-const OffersList = ({ offers }) => {
+const OffersList = ({ isMe, offers }) => {
+  console.log(offers);
+
   return (
     <Background>
       <div className="offer-list">
-        {offers.length === 0 && (
+        {offers && offers.length === 0 && (
           <p>This domain doesn't have any swap offers yet!</p>
         )}
-        {offers.map(({ user_id, domain_id }) => (
-          <OfferCard userId={user_id} domainId={domain_id} />
-        ))}
+        {offers &&
+          offers.map(({ user_img, user_name, domain_id }) => (
+            <OfferCard
+              isMe={isMe}
+              userImg={user_img}
+              userName={user_name}
+              domainId={domain_id}
+            />
+          ))}
       </div>
     </Background>
   );

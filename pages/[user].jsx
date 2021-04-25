@@ -1,7 +1,7 @@
 // Libraries
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { signIn, getSession } from "next-auth/client";
+import { signIn, signOut, getSession } from "next-auth/client";
 import Head from "next/head";
 import axios from "axios";
 import styled from "styled-components";
@@ -14,6 +14,8 @@ import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import TradeCard from "../components/ui/TradeCard";
 import SwappedCard from "../components/ui/SwappedCard";
+
+const isValidDomain = require("is-valid-domain");
 
 const verifySuccess = () => toast.success("Your domain has been verified!");
 
@@ -32,7 +34,6 @@ const User = ({ session, initialDomains, userInfo }) => {
   // ----
 
   const isMe = session ? session.user_id === userInfo.external_id : false;
-  // const isMe = false;
 
   useEffect(() => {
     let verifiedDomains = domains.filter(
@@ -92,7 +93,7 @@ const User = ({ session, initialDomains, userInfo }) => {
     toast.promise(verifyPromise, {
       loading: `Verifying ${domainName}...`,
       success: `${domainName} is verified!`,
-      error: `Error when veryfing ${domainName}, try again.`,
+      error: `Error while veryfing ${domainName}, try again.`,
     });
   };
 
@@ -139,6 +140,12 @@ const User = ({ session, initialDomains, userInfo }) => {
           <div class="open">{unswappedDomains.length} open swap offers</div>
           <div class="traded">{swappedDomains.length} domains swaped</div>
         </div>
+
+        {isMe && (
+          <button class="signout-btn" onClick={signOut}>
+            Sign out
+          </button>
+        )}
 
         {isMe && unverifiedDomains.length > 0 && (
           <section>
@@ -232,7 +239,12 @@ const User = ({ session, initialDomains, userInfo }) => {
               value={newDomain}
               onChange={(e) => setNewDomain(e.target.value)}
             />
-            <button onClick={() => handleDomainAdd()}>Add my domain</button>
+            <button
+              onClick={() => handleDomainAdd()}
+              disabled={!isValidDomain(newDomain)}
+            >
+              Add my domain
+            </button>
           </ModalContainer>
         </ReactModal>
 
@@ -270,7 +282,7 @@ export async function getServerSideProps(context) {
   const domains = await axios
     .request({
       method: "GET",
-      url: `http://localhost:5000/api/domains/${user[0]._id}`,
+      url: `http://localhost:5000/api/domains/${user[0].external_id}`,
       data: {
         secret: "q+pXtJSG#JDN37HsE@,",
       },
@@ -303,6 +315,12 @@ const ModalContainer = styled.div`
   button {
     width: 100%;
     padding: 0.5rem;
+
+    transition: all 0.15s ease-in;
+
+    &:disabled {
+      background-color: #0c0066;
+    }
   }
 `;
 
@@ -361,14 +379,20 @@ const StyledContainer = styled(Container)`
     }
   }
 
-  .add-btn {
+  .add-btn,
+  .signout-btn {
     width: 30rem;
     margin: 0 auto 1rem auto;
     display: block;
   }
 
+  .signout-btn {
+    margin-bottom: 3rem;
+    background-color: #ec6559;
+  }
+
   .user-stats {
-    margin: 0 auto 3rem auto;
+    margin: 0 auto 1rem auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 1rem;

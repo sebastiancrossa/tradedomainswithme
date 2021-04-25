@@ -12,6 +12,8 @@ import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import SwapsList from "../components/containers/SwapsList";
 
+const isValidDomain = require("is-valid-domain");
+
 export default function Home({ session, domains, userInfo }) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -100,7 +102,12 @@ export default function Home({ session, domains, userInfo }) {
               value={newDomain}
               onChange={(e) => setNewDomain(e.target.value)}
             />
-            <button onClick={() => handleDomainSubmit()}>Add my domain</button>
+            <button
+              onClick={() => handleDomainSubmit()}
+              disabled={!isValidDomain(newDomain)}
+            >
+              Add my domain
+            </button>
           </ModalContainer>
         </ReactModal>
 
@@ -171,6 +178,12 @@ const ModalContainer = styled.div`
   button {
     width: 100%;
     padding: 0.5rem;
+
+    transition: all 0.15s ease-in;
+
+    &:disabled {
+      background-color: #0c0066;
+    }
   }
 `;
 

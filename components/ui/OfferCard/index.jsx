@@ -1,74 +1,101 @@
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import axios from "axios";
 import styled from "styled-components";
 import { BiCheck } from "react-icons/bi";
 import { AiOutlineTwitter } from "react-icons/ai";
 
-const OfferCard = ({ userId, domainId }) => {
-  const [userInfo, setUserInfo] = useState();
-
-  console.log(userId);
+const OfferCard = ({ isMe, userImg, userName, domainId }) => {
+  const [domainInfo, setDomainInfo] = useState();
+  console.log(domainId);
 
   const fetchInfo = async () => {
-    // Fetch complete user info
-    const user = await axios
+    await axios
       .request({
         method: "GET",
-        url: `http://localhost:5000/api/users/${userId}`,
-        headers: { "Content-Type": "application/json" },
+        url: `http://localhost:5000/api/domains/`,
         data: {
           secret: "q+pXtJSG#JDN37HsE@,",
         },
       })
-      .then((res) => console.log(res))
+      .then((res) => res.data)
+      .then((domains) => {
+        console.log(domains);
+        return domains.filter((domain) => domain._id === domainId);
+      })
+      .then((domain) => setDomainInfo(domain[0]))
       .catch((err) => console.log(err));
   };
+
+  const handleDomainSwap = async () => {};
 
   useEffect(() => {
     fetchInfo();
   }, []);
 
+  console.log("domainInfo", domainInfo);
+
   return (
     <Container>
       <Background>
         <div className="user-info">
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <img
-              src="https://avatars.githubusercontent.com/u/20131547?v=4"
-              alt="User profile image"
-            />
-            <p>{user} wants to swap this domain for:</p>
-          </div>
-          <p>
-            <span
-              style={{
-                padding: "0.5rem",
-                backgroundColor: "white",
-                borderRadius: "5px",
-                marginLeft: "0.5rem",
-              }}
-            >
-              {domain}
-            </span>
-          </p>
+          <Link href={`/${userName}`}>
+            <a>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  color: "black",
+                }}
+              >
+                <img src={userImg} alt="User profile image" />
+                <p>{userName} wants to swap this domain for:</p>
+              </div>
+            </a>
+          </Link>
+          <Link href={`/trade/${domainInfo && domainInfo.name}`}>
+            <a>
+              <p>
+                <span
+                  style={{
+                    padding: "0.5rem",
+                    backgroundColor: "white",
+                    borderRadius: "5px",
+                    marginLeft: "0.5rem",
+                    cursor: "pointer",
+                    color: "black",
+                  }}
+                >
+                  {domainInfo && domainInfo.name}
+                </span>
+              </p>
+            </a>
+          </Link>
         </div>
       </Background>
       {/* only display this if the user is the one who initiated the swap */}
-      <div className="action-list">
-        <button className="contact">
-          <AiOutlineTwitter
-            size={25}
-            style={{ stroke: "white", marginRight: "0.5rem" }}
-          />
-          <p>Send a DM</p>
-        </button>
-        <button className="success">
-          <BiCheck
-            size={25}
-            style={{ stroke: "white", marginRight: "0.5rem" }}
-          />
-          <p>Mark as swapped</p>
-        </button>
-      </div>
+      {isMe && (
+        <div className="action-list">
+          <a
+            className="contact"
+            href={`https://twitter.com/${userName}`}
+            target="_blank"
+          >
+            <AiOutlineTwitter
+              size={25}
+              style={{ stroke: "white", marginRight: "0.5rem" }}
+            />
+            <p>Send a DM</p>
+          </a>
+          <button className="success" onClick={() => handleDomainSwap()}>
+            <BiCheck
+              size={25}
+              style={{ stroke: "white", marginRight: "0.5rem" }}
+            />
+            <p>Mark as swapped</p>
+          </button>
+        </div>
+      )}
     </Container>
   );
 };
@@ -85,9 +112,12 @@ const Container = styled.div`
     grid-template-columns: 1fr 1fr;
     grid-gap: 0.5rem;
 
-    button {
+    button,
+    a {
       padding: 0.5rem;
       color: white;
+      border-radius: 5px;
+      font-weight: 600;
     }
   }
 
@@ -96,6 +126,10 @@ const Container = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+
+    p {
+      margin: 0;
+    }
   }
 
   .contact {

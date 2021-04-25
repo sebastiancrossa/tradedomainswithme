@@ -1,15 +1,44 @@
+import { useState } from "react";
+import { useRouter } from "next/router";
+import axios from "axios";
 import styled from "styled-components";
 
-const MakeAnOffer = () => {
+const MakeAnOffer = ({ domains, currentDomain }) => {
+  const router = useRouter();
+  const [selectedDomain, setSelectedDomain] = useState(domains[0]._id);
+
+  const handleCreateOffer = async () => {
+    await axios
+      .request({
+        method: "PUT",
+        url: `http://localhost:5000/api/domains/${currentDomain}/newOffer`,
+        headers: { "Content-Type": "application/json" },
+        data: {
+          secret: "q+pXtJSG#JDN37HsE@,",
+          offerDomainId: selectedDomain,
+        },
+      })
+      .then((res) => res.data)
+      .then(() => router.reload())
+      .catch((err) => console.log(err));
+  };
+
+  const handleSelectChange = (e) => {
+    setSelectedDomain(e.target.value);
+  };
+
   return (
     <Background>
       <h3>Are you interested in this domain? Offer one of your own:</h3>
-      <select>
-        <option value="kisana.mx">kisana.mx</option>
-        <option value="kisana.co">kisana.co</option>
-        <option value="getkairos.com">getkairos.com</option>
+      <select value={selectedDomain} onChange={(e) => handleSelectChange(e)}>
+        {domains &&
+          domains.map((domain) => (
+            <option key={domain._id} value={domain._id} domainId={domain._id}>
+              {domain.name}
+            </option>
+          ))}
       </select>
-      <button>Offer this domain</button>
+      <button onClick={() => handleCreateOffer()}>Offer this domain</button>
     </Background>
   );
 };

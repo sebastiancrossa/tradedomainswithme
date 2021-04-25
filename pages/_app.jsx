@@ -1,10 +1,18 @@
 import Head from "next/head";
 import { Provider } from "next-auth/client";
+import Router from "next/router";
+import NProgress from "nprogress";
 import { Toaster } from "react-hot-toast";
 
 import { ThemeProvider } from "styled-components";
 import theme from "../utils/theme";
 import GlobalStyles from "../utils/global";
+
+Router.events.on("routeChangeStart", (url) => {
+  NProgress.start();
+});
+Router.events.on("routeChangeComplete", () => NProgress.done());
+Router.events.on("routeChangeError", () => NProgress.done());
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -15,6 +23,7 @@ function MyApp({ Component, pageProps }) {
           href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap"
           rel="stylesheet"
         />
+        <link rel="stylesheet" type="text/css" href="/nprogress.css" />
       </Head>
       <Provider session={pageProps.session}>
         <ThemeProvider theme={theme}>

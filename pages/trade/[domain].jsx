@@ -13,17 +13,24 @@ import { Container } from "../../styles";
 import MakeAnOffer from "../../components/containers/MakeAnOffer";
 import OffersList from "../../components/containers/OffersList";
 
-const Domain = ({ session, userInfo, domainInfo }) => {
+const Domain = ({
+  session,
+  userInfo,
+  domainInfo,
+  domainOwner,
+  domainsByCurrentUser,
+}) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
-  console.log("userInfo on domain", userInfo);
-
-  // console.log(session);
-  // console.log(domainInfo);
+  // console.log("userInfo on domain", userInfo);
+  console.log("domainInfo", domainInfo);
+  console.log("domainOwner", domainOwner);
 
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
+
+  const isMe = session ? session.user_id === domainOwner.external_id : false;
 
   const handleDomainDelete = async () => {
     await axios
@@ -76,19 +83,31 @@ const Domain = ({ session, userInfo, domainInfo }) => {
             <p style={{ marginRight: "0.5rem" }}>a domain owned by</p>
             <div className="user-content">
               <img
-                src="https://avatars.githubusercontent.com/u/20131547?v=4"
+                src={domainOwner && domainOwner.profile_img}
                 alt="User profile image"
               />
-              <p>Sebastian Crossa</p>
+              <p>{domainOwner && domainOwner.user_name}</p>
             </div>
           </div>
-          <button className="close" onClick={() => onOpenModal()}>
-            Delete this domain
-          </button>
+
+          {isMe && (
+            <button className="close" onClick={() => onOpenModal()}>
+              Delete this domain
+            </button>
+          )}
         </div>
 
-        {session && session.user_id !== domainInfo.user_id && <MakeAnOffer />}
-        <OffersList offers={domainInfo.swapOffersReceived} />
+        {session && session.user_id !== (domainInfo && domainInfo.user_id) && (
+          <MakeAnOffer
+            domains={domainsByCurrentUser}
+            currentDomain={domainInfo._id}
+          />
+        )}
+
+        <OffersList
+          isMe={isMe}
+          offers={domainInfo && domainInfo.swapOffersReceived}
+        />
 
         <Footer />
 
@@ -140,6 +159,9 @@ const Domain = ({ session, userInfo, domainInfo }) => {
 export async function getServerSideProps(context) {
   const session = await getSession(context);
   let user = null;
+  let localDomainInfo;
+  let localDomainOwner;
+  let domainsByCurrentUser = [];
 
   if (session) {
     // Fetch complete user info of logged in user
@@ -159,7 +181,7 @@ export async function getServerSideProps(context) {
   }
 
   // Fetching id of the domain
-  const domainInfo = await axios
+  await axios
     .request({
       method: "GET",
       url: "http://localhost:5000/api/domains/",
@@ -169,18 +191,44 @@ export async function getServerSideProps(context) {
       },
     })
     .then((res) => res.data)
-    .then((domains) =>
-      domains.filter((domain) => domain.name === context.query.domain)
-    )
+    .then((domains) => {
+      domains.map((domain) => {
+        if (domain.user_id === session.user_id)
+          domainsByCurrentUser.push(domain);
+      });
+
+      // console.log(domains, context.query.domain);
+      return domains.filter((domain) => domain.name === context.query.domain);
+    })
+    .then(async (info) => {
+      localDomainInfo = info;
+      console.log(info);
+      await axios
+        .request({
+          method: "GET",
+          url: `http://localhost:5000/api/users/${info[0].user_id}`,
+          headers: { "Content-Type": "application/json" },
+          data: {
+            secret: "q+pXtJSG#JDN37HsE@,",
+          },
+        })
+        .then((res) => res.data)
+        .then((ownerInfo) => {
+          localDomainOwner = ownerInfo;
+        })
+        .catch((err) => console.log(err));
+    })
     .catch((err) => console.log(err));
 
-  // console.log(domainInfo);
+  console.log("domainsByCurrentUser", domainsByCurrentUser);
 
   return {
     props: {
       session,
       userInfo: session ? user[0] : null,
-      domainInfo: domainInfo && domainInfo[0],
+      domainInfo: localDomainInfo && localDomainInfo[0],
+      domainOwner: localDomainOwner && localDomainOwner[0],
+      domainsByCurrentUser,
     },
   };
 }

@@ -29,6 +29,8 @@ const Background = styled.nav`
   justify-content: space-between;
   align-items: center;
 
+  padding-top: 0.5rem;
+
   font-weight: 600;
 
   img {

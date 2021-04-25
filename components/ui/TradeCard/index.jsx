@@ -34,7 +34,14 @@ const OfferCard = ({ domain }) => {
   return (
     <Background>
       <div className="user-info">
-        <img src={userInfo && userInfo.profile_img} alt="User profile image" />
+        <img
+          src={
+            userInfo
+              ? userInfo.profile_img
+              : "https://st3.depositphotos.com/1767687/16607/v/380/depositphotos_166074422-stock-illustration-default-avatar-profile-icon-grey.jpg"
+          }
+          alt="User profile image"
+        />
         <p>@{userInfo && userInfo.user_name} wants to trade</p>
       </div>
 
