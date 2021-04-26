@@ -24,6 +24,15 @@ function MyApp({ Component, pageProps }) {
           rel="stylesheet"
         />
         <link rel="stylesheet" type="text/css" href="/nprogress.css" />
+
+        <meta
+          property="og:image"
+          content="https://res.cloudinary.com/kisana/image/upload/v1619462650/tradedomainswithme-pic.jpg"
+        />
+        <meta
+          itemprop="image"
+          content="https://res.cloudinary.com/kisana/image/upload/v1619462650/tradedomainswithme-pic.jpg"
+        />
       </Head>
       <Provider session={pageProps.session}>
         <ThemeProvider theme={theme}>
