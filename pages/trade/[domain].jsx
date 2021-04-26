@@ -6,6 +6,7 @@ import axios from "axios";
 
 import styled from "styled-components";
 
+import GALayout from "../../components/layout/GALayout";
 import ReactModal from "react-modal";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
@@ -47,7 +48,7 @@ const Domain = ({
   };
 
   return (
-    <>
+    <GALayout>
       <Head>
         <title>Swap potentialfor.business</title>
         <link rel="icon" href="/favicon.ico" />
@@ -240,7 +241,7 @@ const Domain = ({
           </ModalContainer>
         </ReactModal>
       </StyledContainer>
-    </>
+    </GALayout>
   );
 };
 

@@ -7,6 +7,7 @@ import ReactModal from "react-modal";
 import styled from "styled-components";
 
 // Component imports
+import GALayout from "../components/layout/GALayout";
 import { Container } from "../styles";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
@@ -45,7 +46,7 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
   };
 
   return (
-    <>
+    <GALayout>
       <Head>
         <title>tradedomainswith.me</title>
         <link rel="icon" href="/favicon.ico" />
@@ -135,7 +136,7 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
 
         <Footer />
       </StyledContainer>
-    </>
+    </GALayout>
   );
 }
 

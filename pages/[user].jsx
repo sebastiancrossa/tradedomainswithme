@@ -9,6 +9,7 @@ import ReactModal from "react-modal";
 import toast from "react-hot-toast";
 
 // Component imports
+import GALayout from "../components/layout/GALayout";
 import { Container } from "../styles";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
@@ -101,7 +102,7 @@ const User = ({ session, initialDomains, userInfo }) => {
   const onCloseModal = () => setIsOpen(false);
 
   return (
-    <>
+    <GALayout>
       <Head>
         <title>{router.query.user} | tradedomainswith.me</title>
         <link rel="icon" href="/favicon.ico" />
@@ -254,7 +255,7 @@ const User = ({ session, initialDomains, userInfo }) => {
 
         <Footer />
       </StyledContainer>
-    </>
+    </GALayout>
   );
 };
 

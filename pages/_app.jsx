@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast";
 import { ThemeProvider } from "styled-components";
 import theme from "../utils/theme";
 import GlobalStyles from "../utils/global";
+import GALayout from "../components/layout/GALayout";
 
 Router.events.on("routeChangeStart", (url) => {
   NProgress.start();

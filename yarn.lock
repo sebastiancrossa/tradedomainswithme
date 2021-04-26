@@ -1341,7 +1341,7 @@ globals@^11.1.0:
 
 goober@^2.0.15:
   version "2.0.37"
-  resolved "https://registry.yarnpkg.com/goober/-/goober-2.0.37.tgz#5598c41f4c19bc1fca2c926e876a58a685faffb8"
+  resolved "https://registry.npmjs.org/goober/-/goober-2.0.37.tgz"
   integrity sha512-wgj5C7IJX2+MyHZ4TgOA+hLL1mCDW+jGorQ5KCMLF1ofE9gQkfbo1s8txIrzIsAX65XRTm0qaipolId2KMYUkw==
 
 graceful-fs@^4.1.2:
@@ -1637,7 +1637,7 @@ is-typedarray@~1.0.0:
 
 is-valid-domain@^0.0.19:
   version "0.0.19"
-  resolved "https://registry.yarnpkg.com/is-valid-domain/-/is-valid-domain-0.0.19.tgz#50ce5ff3ab1cbe85bcb5b155b0fba61f4b9ea668"
+  resolved "https://registry.npmjs.org/is-valid-domain/-/is-valid-domain-0.0.19.tgz"
   integrity sha512-NxuZbJABXdGlFNEVphG9bT0YOQE0B75Bv+emGsEjmRnAs9aMUVbdKUafj//yTxApThjqQqRKBd9MJDlnqx8Pmg==
   dependencies:
     punycode "^1.4.1"
@@ -2200,7 +2200,7 @@ normalize-path@^3.0.0, normalize-path@~3.0.0:
 
 nprogress@^0.2.0:
   version "0.2.0"
-  resolved "https://registry.yarnpkg.com/nprogress/-/nprogress-0.2.0.tgz#cb8f34c53213d895723fcbab907e9422adbcafb1"
+  resolved "https://registry.npmjs.org/nprogress/-/nprogress-0.2.0.tgz"
   integrity sha1-y480xTIT2JVyP8urkH6UIq28r7E=
 
 nth-check@~1.0.1:
@@ -2552,9 +2552,14 @@ react-dom@17.0.2:
     object-assign "^4.1.1"
     scheduler "^0.20.2"
 
+react-ga@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/react-ga/-/react-ga-3.3.0.tgz#c91f407198adcb3b49e2bc5c12b3fe460039b3ca"
+  integrity sha512-o8RScHj6Lb8cwy3GMrVH6NJvL+y0zpJvKtc0+wmH7Bt23rszJmnqEQxRbyrqUzk9DTJIHoP42bfO5rswC9SWBQ==
+
 react-hot-toast@^1.0.2:
   version "1.0.2"
-  resolved "https://registry.yarnpkg.com/react-hot-toast/-/react-hot-toast-1.0.2.tgz#162f020ba7c0b20f2f25bb7738458c435e84107c"
+  resolved "https://registry.npmjs.org/react-hot-toast/-/react-hot-toast-1.0.2.tgz"
   integrity sha512-wp89H0WA6EtiexAg5l3ys+WaZ3u0xM/FJWxl6YxR3hlquWhKvO9snBgTe4ATPEcgbS6pbc43RbuBINOkYOzA5A==
   dependencies:
     goober "^2.0.15"
