@@ -16,7 +16,7 @@ const OfferCard = ({ isMe, userImg, userName, domainId, parentDomainId }) => {
   const fetchInfo = async () => {
     await axios
       .request({
-        method: "GET",
+        method: "POST",
         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains/`,
         data: {
           secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,

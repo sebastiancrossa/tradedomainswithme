@@ -166,7 +166,7 @@ export async function getServerSideProps(context) {
   // Fetch all domains from user
   await axios
     .request({
-      method: "GET",
+      method: "POST",
       url: `${process.env.BACKEND_URL}/api/domains/`,
       data: {
         secret: process.env.BACKEND_SECRET,
