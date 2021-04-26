@@ -4,7 +4,7 @@ export const initGA = () => {
   console.log("GA init");
 
   if (location.hostname !== "localhost") {
-    ReactGA.initialize(process.env.ANALYTICS_ID);
+    ReactGA.initialize(process.env.NEXT_PUBLIC_ANALYTICS_ID);
   }
 };
 
