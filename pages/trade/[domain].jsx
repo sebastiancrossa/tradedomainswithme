@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { signIn, getSession } from "next-auth/client";
+import { signIn, signOut, getSession } from "next-auth/client";
 import Head from "next/head";
 import axios from "axios";
 
@@ -23,12 +23,10 @@ const Domain = ({
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
-  // console.log("userInfo on domain", userInfo);
-  console.log("domainInfo", domainInfo);
-  console.log("domainOwner", domainOwner);
-
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
+
+  console.log(domainInfo);
 
   const isMe = session ? session.user_id === domainOwner.external_id : false;
 
@@ -36,10 +34,10 @@ const Domain = ({
     await axios
       .request({
         method: "DELETE",
-        url: `http://localhost:5000/api/domains/${domainInfo._id}`,
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains/${domainInfo._id}`,
         headers: { "Content-Type": "application/json" },
         data: {
-          secret: "q+pXtJSG#JDN37HsE@,",
+          secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
         },
       })
       .then((res) => res.data)
@@ -60,55 +58,140 @@ const Domain = ({
           session={session}
           user={userInfo && userInfo.user_name}
           signIn={signIn}
+          signOut={signOut}
         />
 
-        <div className="heading-info">
-          <div className="tag">
-            <p>Unverified</p>
-          </div>
-          <h1>
-            Swap offers for
-            <br />
-            <span className="domain">{router.query.domain}</span>
-          </h1>
+        {domainInfo && domainInfo.swappedWith ? (
+          <div className="heading-info">
+            <div>
+              {domainInfo.isVerified ? (
+                <div className="tag verified">
+                  <p>Verified</p>
+                </div>
+              ) : (
+                <div className="tag unverified">
+                  <p>Unverified</p>
+                </div>
+              )}
+              <h1>
+                <span className="domain">{router.query.domain}</span>
+              </h1>
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              marginBottom: "1rem",
-            }}
-          >
-            <p style={{ marginRight: "0.5rem" }}>a domain owned by</p>
-            <div className="user-content">
-              <img
-                src={domainOwner && domainOwner.profile_img}
-                alt="User profile image"
-              />
-              <p>{domainOwner && domainOwner.user_name}</p>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginBottom: "1rem",
+                }}
+              >
+                <p style={{ marginRight: "0.5rem" }}>a domain owned by</p>
+                <div className="user-content">
+                  <img
+                    src={domainOwner && domainOwner.profile_img}
+                    alt="User profile image"
+                  />
+                  <p>{domainOwner && domainOwner.user_name}</p>
+                </div>
+              </div>
+            </div>
+
+            <h1 style={{ padding: "2rem 0" }}>swapped with</h1>
+
+            <div>
+              {domainInfo.swappedWith.domain_verified ? (
+                <div className="tag verified">
+                  <p>Verified</p>
+                </div>
+              ) : (
+                <div className="tag unverified">
+                  <p>Unverified</p>
+                </div>
+              )}
+              <h1>
+                <span className="domain">
+                  {domainInfo.swappedWith.domain_name}
+                </span>
+              </h1>
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginBottom: "1rem",
+                }}
+              >
+                <p style={{ marginRight: "0.5rem" }}>a domain owned by</p>
+                <div className="user-content">
+                  <img
+                    src={domainInfo.swappedWith.user_img}
+                    alt="User profile image"
+                  />
+                  <p>{domainInfo.swappedWith.user_name}</p>
+                </div>
+              </div>
             </div>
           </div>
+        ) : (
+          <div className="heading-info">
+            {domainInfo.isVerified ? (
+              <div className="tag verified">
+                <p>Verified</p>
+              </div>
+            ) : (
+              <div className="tag unverified">
+                <p>Unverified</p>
+              </div>
+            )}
+            <h1>
+              Swap offers for
+              <br />
+              <span className="domain">{router.query.domain}</span>
+            </h1>
 
-          {isMe && (
-            <button className="close" onClick={() => onOpenModal()}>
-              Delete this domain
-            </button>
-          )}
-        </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: "1rem",
+              }}
+            >
+              <p style={{ marginRight: "0.5rem" }}>a domain owned by</p>
+              <div className="user-content">
+                <img
+                  src={domainOwner && domainOwner.profile_img}
+                  alt="User profile image"
+                />
+                <p>{domainOwner && domainOwner.user_name}</p>
+              </div>
+            </div>
 
-        {session && session.user_id !== (domainInfo && domainInfo.user_id) && (
-          <MakeAnOffer
-            domains={domainsByCurrentUser}
-            currentDomain={domainInfo._id}
-          />
+            {isMe && (
+              <button className="close" onClick={() => onOpenModal()}>
+                Delete this domain
+              </button>
+            )}
+          </div>
         )}
 
-        <OffersList
-          isMe={isMe}
-          offers={domainInfo && domainInfo.swapOffersReceived}
-          parentDomainId={domainInfo._id}
-        />
+        {session &&
+          session.user_id !== (domainInfo && domainInfo.user_id) &&
+          !domainInfo.swappedWith && (
+            <MakeAnOffer
+              domains={domainsByCurrentUser}
+              currentDomain={domainInfo}
+            />
+          )}
+
+        {domainInfo && !domainInfo.swappedWith && (
+          <OffersList
+            isMe={isMe}
+            offers={domainInfo && domainInfo.swapOffersReceived}
+            parentDomainId={domainInfo._id}
+          />
+        )}
 
         <Footer />
 
@@ -122,6 +205,10 @@ const Domain = ({
               backgroundColor: "rgba(255, 255, 255, 0.7)",
             },
             content: {
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
               border: "none",
               boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
               maxWidth: "25rem",
@@ -169,10 +256,10 @@ export async function getServerSideProps(context) {
     const users = await axios
       .request({
         method: "GET",
-        url: "http://localhost:5000/api/users/",
+        url: `${process.env.BACKEND_URL}/api/users/`,
         headers: { "Content-Type": "application/json" },
         data: {
-          secret: "q+pXtJSG#JDN37HsE@,",
+          secret: process.env.BACKEND_SECRET,
         },
       })
       .then((res) => res.data)
@@ -185,10 +272,10 @@ export async function getServerSideProps(context) {
   await axios
     .request({
       method: "GET",
-      url: "http://localhost:5000/api/domains/",
+      url: `${process.env.BACKEND_URL}/api/domains/`,
       headers: { "Content-Type": "application/json" },
       data: {
-        secret: "q+pXtJSG#JDN37HsE@,",
+        secret: process.env.BACKEND_SECRET,
       },
     })
     .then((res) => res.data)
@@ -198,7 +285,6 @@ export async function getServerSideProps(context) {
           domainsByCurrentUser.push(domain);
       });
 
-      // console.log(domains, context.query.domain);
       return domains.filter((domain) => domain.name === context.query.domain);
     })
     .then(async (info) => {
@@ -206,11 +292,11 @@ export async function getServerSideProps(context) {
       console.log(info);
       await axios
         .request({
-          method: "GET",
-          url: `http://localhost:5000/api/users/${info[0].user_id}`,
+          method: "POST",
+          url: `${process.env.BACKEND_URL}/api/users/${info[0].user_id}`,
           headers: { "Content-Type": "application/json" },
           data: {
-            secret: "q+pXtJSG#JDN37HsE@,",
+            secret: process.env.BACKEND_SECRET,
           },
         })
         .then((res) => res.data)
@@ -220,8 +306,6 @@ export async function getServerSideProps(context) {
         .catch((err) => console.log(err));
     })
     .catch((err) => console.log(err));
-
-  console.log("domainsByCurrentUser", domainsByCurrentUser);
 
   return {
     props: {
@@ -279,19 +363,24 @@ const StyledContainer = styled(Container)`
   }
 
   .tag {
-    background-color: #fbf1eb;
-    color: #f1a16f;
-
     width: fit-content;
     margin: 0 auto 0.5rem auto;
 
     font-size: 1rem;
+    font-weight: 600;
 
     border-radius: 50rem;
     padding: 0.2rem 1rem;
+  }
 
-    font-weight: 600;
-    border-radius: 50rem;
+  .verified {
+    background-color: #d9f6e3;
+    color: #4da769;
+  }
+
+  .unverified {
+    background-color: #fbf1eb;
+    color: #f1a16f;
   }
 
   .heading-info {

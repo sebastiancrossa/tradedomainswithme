@@ -11,10 +11,11 @@ import { Container } from "../styles";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import SwapsList from "../components/containers/SwapsList";
+import SwappedCard from "../components/ui/SwappedCard";
 
 const isValidDomain = require("is-valid-domain");
 
-export default function Home({ session, domains, userInfo }) {
+export default function Home({ session, domains, swappedDomains, userInfo }) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [newDomain, setNewDomain] = useState("");
@@ -22,18 +23,16 @@ export default function Home({ session, domains, userInfo }) {
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
 
-  console.log(userInfo);
-
   const handleDomainSubmit = async () => {
     // Creating the new domain
     // TODO: Do some server side protection as well
-    let createdDomain = await axios
+    await axios
       .request({
         method: "POST",
-        url: "http://localhost:5000/api/domains/",
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains/`,
         headers: { "Content-Type": "application/json" },
         data: {
-          secret: "q+pXtJSG#JDN37HsE@,",
+          secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
           user_id: session.user_id,
           name: newDomain,
         },
@@ -57,6 +56,7 @@ export default function Home({ session, domains, userInfo }) {
           session={session}
           user={userInfo && userInfo.user_name}
           signIn={signIn}
+          signOut={signOut}
         />
         {/* <button onClick={() => signOut()}>Sign out</button> */}
 
@@ -75,6 +75,24 @@ export default function Home({ session, domains, userInfo }) {
 
         <SwapsList domains={domains} />
 
+        <section>
+          <h2 style={{ marginBottom: "1rem" }}>Recently swapped domains</h2>
+
+          {swappedDomains && swappedDomains.length == 0 ? (
+            <p>No swaps done just yet!</p>
+          ) : (
+            <div className="swapped-list">
+              {swappedDomains &&
+                swappedDomains.map((swappedDomain) => (
+                  <SwappedCard
+                    domain={swappedDomain}
+                    user={swappedDomain.user && swappedDomain.user.user}
+                  />
+                ))}
+            </div>
+          )}
+        </section>
+
         <ReactModal
           isOpen={isOpen}
           onRequestClose={onCloseModal}
@@ -82,9 +100,13 @@ export default function Home({ session, domains, userInfo }) {
           shouldCloseOnEsc
           style={{
             overlay: {
-              backgroundColor: "rgba(255, 255, 255, 0.7)",
+              backgroundColor: "rgba(255, 255, 255, 0.8)",
             },
             content: {
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
               border: "none",
               boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
               maxWidth: "25rem",
@@ -119,7 +141,8 @@ export default function Home({ session, domains, userInfo }) {
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);
-  let domains = null;
+  let swappedDomains = [];
+  let unswappedDomains = [];
   let user = null;
 
   if (session) {
@@ -127,37 +150,80 @@ export async function getServerSideProps(context) {
     const users = await axios
       .request({
         method: "GET",
-        url: "http://localhost:5000/api/users/",
+        url: `${process.env.BACKEND_URL}/api/users/`,
         headers: { "Content-Type": "application/json" },
         data: {
-          secret: "q+pXtJSG#JDN37HsE@,",
+          secret: process.env.BACKEND_SECRET,
         },
       })
       .then((res) => res.data)
       .catch((err) => console.log(err));
 
-    // console.log(users);
-    // console.log(session);
-
     user = users.filter((user) => user.external_id === session.user_id);
   }
 
   // Fetch all domains from user
-  domains = await axios
+  await axios
     .request({
       method: "GET",
-      url: `http://localhost:5000/api/domains/`,
+      url: `${process.env.BACKEND_URL}/api/domains/`,
       data: {
-        secret: "q+pXtJSG#JDN37HsE@,",
+        secret: process.env.BACKEND_SECRET,
       },
     })
     .then((res) => res.data)
+    .then((fetchedDomains) =>
+      fetchedDomains.map((domain) => {
+        if (domain.swappedWith) {
+          if (
+            swappedDomains.length === 0 ||
+            swappedDomains.some(
+              (item) => item.swappedWith.domain_name !== domain.name
+            )
+          )
+            swappedDomains.push(domain);
+        } else {
+          unswappedDomains.push(domain);
+        }
+      })
+    )
+    .then(async () => {
+      // If we do have swapped domains, fetch the users info
+      if (swappedDomains.length > 0) {
+        await Promise.all(
+          swappedDomains.map(async (swappedDomain, index) => {
+            await axios
+              .request({
+                method: "POST",
+                url: `${process.env.BACKEND_URL}/api/users/${swappedDomain.user_id}`,
+                data: {
+                  secret: process.env.BACKEND_SECRET,
+                },
+              })
+              .then((res) => res.data)
+              .then((user) => {
+                swappedDomains[index]["user"] = {
+                  user: user[0],
+                  ...swappedDomain,
+                };
+              })
+              .catch((err) =>
+                console.log(
+                  "Error while fetching swapped domain user info |",
+                  err
+                )
+              );
+          })
+        );
+      }
+    })
     .catch((err) => console.log(err));
 
   return {
     props: {
       session,
-      domains: domains,
+      domains: unswappedDomains,
+      swappedDomains,
       userInfo: session ? user[0] : null,
     },
   };
@@ -200,5 +266,19 @@ const StyledContainer = styled(Container)`
 
     padding: 2rem;
     border-radius: 10px;
+  }
+
+  .swapped-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 3rem;
+
+    @media only screen and (max-width: 1024px) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media only screen and (max-width: 425px) {
+      grid-template-columns: 1fr;
+    }
   }
 `;

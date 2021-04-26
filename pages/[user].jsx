@@ -19,8 +19,13 @@ const isValidDomain = require("is-valid-domain");
 
 const verifySuccess = () => toast.success("Your domain has been verified!");
 
+const getRandomNumber = (max) => {
+  return Math.floor(Math.random() * max);
+};
+
 const User = ({ session, initialDomains, userInfo }) => {
   const router = useRouter();
+  const [randNum, setRandNum] = useState(getRandomNumber(999999));
   const [isOpen, setIsOpen] = useState(false);
 
   // Domain-related state
@@ -51,22 +56,16 @@ const User = ({ session, initialDomains, userInfo }) => {
     setUnswappedDomains(unswappedDomains);
   }, [domains]);
 
-  // console.log("domains", domains);
-  // console.log("verified domains", verifiedDomains);
-  // console.log("unverified domains", unverifiedDomains);
-  console.log("swapped domains", swappedDomains);
-  // console.log("unswapped domains", unswappedDomains);
-
   const handleDomainAdd = async () => {
     // Creating the new domain
     // TODO: Do some server side protection as well
     let createdDomain = await axios
       .request({
         method: "POST",
-        url: "http://localhost:5000/api/domains/",
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains/`,
         headers: { "Content-Type": "application/json" },
         data: {
-          secret: "q+pXtJSG#JDN37HsE@,",
+          secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
           user_id: session.user_id,
           name: newDomain,
         },
@@ -83,10 +82,11 @@ const User = ({ session, initialDomains, userInfo }) => {
   const handleDomainVerify = async (domainName, domainId) => {
     const verifyPromise = axios.request({
       method: "PUT",
-      url: `http://localhost:5000/api/domains/verify/${domainId}`,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains/verify/${domainId}`,
       headers: { "Content-Type": "application/json" },
       data: {
-        secret: "q+pXtJSG#JDN37HsE@,",
+        secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
+        randNum,
       },
     });
 
@@ -112,6 +112,7 @@ const User = ({ session, initialDomains, userInfo }) => {
           session={session}
           user={userInfo && userInfo.user_name}
           signIn={signIn}
+          signOut={signOut}
         />
 
         <div className="user-container">
@@ -141,12 +142,6 @@ const User = ({ session, initialDomains, userInfo }) => {
           <div class="traded">{swappedDomains.length} domains swaped</div>
         </div>
 
-        {isMe && (
-          <button class="signout-btn" onClick={signOut}>
-            Sign out
-          </button>
-        )}
-
         {isMe && unverifiedDomains.length > 0 && (
           <section>
             <h2 style={{ margin: "0" }}>Verify your domains</h2>
@@ -161,24 +156,29 @@ const User = ({ session, initialDomains, userInfo }) => {
               <span style={{ fontWeight: "bold" }}>TXT Record</span> with the
               value of{" "}
               <span className="code">
-                tradedomainswithme-[your domain here]
+                tradedomainswithme-{randNum}-[your domain here]
               </span>
-              (e.g. tradedomainswithme-potentialfor.business). Once that is
-              added, keep refreshing until we are able to verify that you are
+              (e.g. tradedomainswithme-999000-potentialfor.business). Once that
+              is added, keep refreshing until we are able to verify that you are
               the owner of that domain!
             </p>
 
             <div className="unverified-domains">
-              {unverifiedDomains.map((domain) => (
-                <div className="unverified-domain">
-                  <p>{domain.name}</p>
-                  <button
-                    onClick={() => handleDomainVerify(domain.name, domain._id)}
-                  >
-                    Check verification
-                  </button>
-                </div>
-              ))}
+              {unverifiedDomains.map(
+                (domain) =>
+                  !domain.swappedWith && (
+                    <div className="unverified-domain">
+                      <p>{domain.name}</p>
+                      <button
+                        onClick={() =>
+                          handleDomainVerify(domain.name, domain._id)
+                        }
+                      >
+                        Check verification
+                      </button>
+                    </div>
+                  )
+              )}
             </div>
           </section>
         )}
@@ -222,6 +222,10 @@ const User = ({ session, initialDomains, userInfo }) => {
               backgroundColor: "rgba(255, 255, 255, 0.7)",
             },
             content: {
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
               border: "none",
               boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
               maxWidth: "25rem",
@@ -261,30 +265,27 @@ export async function getServerSideProps(context) {
   const users = await axios
     .request({
       method: "GET",
-      url: "http://localhost:5000/api/users/",
+      url: `${process.env.BACKEND_URL}/api/users/`,
       headers: { "Content-Type": "application/json" },
       data: {
-        secret: "q+pXtJSG#JDN37HsE@,",
+        secret: process.env.BACKEND_SECRET,
       },
     })
     .then((res) => res.data)
-    .catch((err) => console.log(err));
+    .catch((err) => console.log("error while fetching user", err));
 
   const user = users.filter(
     (user) => user.user_name.toLowerCase() === context.query.user.toLowerCase()
   );
 
-  // console.log("users", users);
-  // console.log("user", user);
-  // console.log("session", session);
-
   // Fetch domains from user
   const domains = await axios
     .request({
-      method: "GET",
-      url: `http://localhost:5000/api/domains/${user[0].external_id}`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      url: `${process.env.BACKEND_URL}/api/domains/${user[0].external_id}`,
       data: {
-        secret: "q+pXtJSG#JDN37HsE@,",
+        secret: process.env.BACKEND_SECRET,
       },
     })
     .then((res) => res.data)
