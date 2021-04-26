@@ -146,6 +146,8 @@ export async function getServerSideProps(context) {
   let unswappedDomains = [];
   let user = null;
 
+  console.log("session from index", session);
+
   if (session) {
     // Fetch complete user info of logged in user
     const users = await axios
