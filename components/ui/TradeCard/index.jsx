@@ -12,20 +12,18 @@ const OfferCard = ({ domain }) => {
   const fetchUserInfo = async () => {
     await axios
       .request({
-        method: "GET",
-        url: `http://localhost:5000/api/users/${domain.user_id}`,
+        method: "POST",
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${domain.user_id}`,
         headers: { "Content-Type": "application/json" },
         data: {
-          secret: "q+pXtJSG#JDN37HsE@,",
+          secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
         },
       })
       .then((res) => res.data)
-      .then((user) => setUserInfo(user[0]))
-      .catch((err) => console.log(err));
+      // .then((data) => console.log("data", data[0]))
+      .then((user) => user[0] && setUserInfo(user[0]))
+      .catch((err) => console.log("error fetching user", err));
   };
-
-  // console.log(userInfo);
-  console.log(userInfo);
 
   useEffect(() => {
     fetchUserInfo();
@@ -61,7 +59,10 @@ const OfferCard = ({ domain }) => {
 
       <div class="trade-info">
         <p>
-          <span>{domain && domain.swapOffersReceived.length}</span> swap offers
+          <span>{domain && domain.swapOffersReceived.length}</span> swap{" "}
+          {domain && domain.swapOffersReceived.length === 1
+            ? "offer"
+            : "offers"}
         </p>
 
         <Link href={`/trade/${domain && domain.name}`} passHref>

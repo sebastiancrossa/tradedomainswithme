@@ -5,7 +5,7 @@ const Footer = () => {
     <Background>
       <p>
         Built by Sebastian Crossa. Have any questions, comments or just want to
-        chat? Shoot me a DM
+        chat? Shoot me a DM{" "}
         <a href="https://twitter.com/SebastianCrossa">@sebastiancrossa</a>
       </p>
     </Background>

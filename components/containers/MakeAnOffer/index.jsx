@@ -8,13 +8,9 @@ const MakeAnOffer = ({ domains, currentDomain }) => {
   const [userDomains, setUserDomains] = useState(domains);
   const [selectedDomain, setSelectedDomain] = useState(domains[0]._id);
 
-  console.log("currentDomain", currentDomain);
-  console.log("userDomains", userDomains);
-
   useEffect(() => {
     // Check if any of the domains of the user are either already swapped or an offer has already been made
     let filteredDomains = domains.filter((domain) => !domain.swappedWith);
-    console.log("filtered 1", filteredDomains);
 
     if (currentDomain.swapOffersReceived.length > 0) {
       filteredDomains = filteredDomains.filter((domain) =>
@@ -29,10 +25,10 @@ const MakeAnOffer = ({ domains, currentDomain }) => {
     await axios
       .request({
         method: "PUT",
-        url: `http://localhost:5000/api/domains/${currentDomain._id}/newOffer`,
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains/${currentDomain._id}/newOffer`,
         headers: { "Content-Type": "application/json" },
         data: {
-          secret: "q+pXtJSG#JDN37HsE@,",
+          secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
           offerDomainId: selectedDomain,
         },
       })

@@ -17,9 +17,9 @@ const OfferCard = ({ isMe, userImg, userName, domainId, parentDomainId }) => {
     await axios
       .request({
         method: "GET",
-        url: `http://localhost:5000/api/domains/`,
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains/`,
         data: {
-          secret: "q+pXtJSG#JDN37HsE@,",
+          secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
         },
       })
       .then((res) => res.data)
@@ -35,17 +35,18 @@ const OfferCard = ({ isMe, userImg, userName, domainId, parentDomainId }) => {
     await axios
       .request({
         method: "PUT",
-        url: `http://localhost:5000/api/domains/swap/${parentDomainId}`,
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains/swap/${parentDomainId}`,
         headers: { "Content-Type": "application/json" },
         data: {
-          secret: "q+pXtJSG#JDN37HsE@,",
+          secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
           swapWithDomainId: domainId,
         },
       })
       .then((res) => res.data)
       .then(() => router.reload())
-      .then((data) => console.log(data))
       .catch((err) => console.log(err));
+
+    setIsOpen(false);
   };
 
   useEffect(() => {

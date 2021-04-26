@@ -2,8 +2,6 @@ import styled from "styled-components";
 import OfferCard from "../../ui/OfferCard";
 
 const OffersList = ({ isMe, offers, parentDomainId }) => {
-  console.log(offers);
-
   return (
     <Background>
       <div className="offer-list">

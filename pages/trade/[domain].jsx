@@ -34,10 +34,10 @@ const Domain = ({
     await axios
       .request({
         method: "DELETE",
-        url: `http://localhost:5000/api/domains/${domainInfo._id}`,
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains/${domainInfo._id}`,
         headers: { "Content-Type": "application/json" },
         data: {
-          secret: "q+pXtJSG#JDN37HsE@,",
+          secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
         },
       })
       .then((res) => res.data)
@@ -256,10 +256,10 @@ export async function getServerSideProps(context) {
     const users = await axios
       .request({
         method: "GET",
-        url: "http://localhost:5000/api/users/",
+        url: `${process.env.BACKEND_URL}/api/users/`,
         headers: { "Content-Type": "application/json" },
         data: {
-          secret: "q+pXtJSG#JDN37HsE@,",
+          secret: process.env.BACKEND_SECRET,
         },
       })
       .then((res) => res.data)
@@ -272,10 +272,10 @@ export async function getServerSideProps(context) {
   await axios
     .request({
       method: "GET",
-      url: "http://localhost:5000/api/domains/",
+      url: `${process.env.BACKEND_URL}/api/domains/`,
       headers: { "Content-Type": "application/json" },
       data: {
-        secret: "q+pXtJSG#JDN37HsE@,",
+        secret: process.env.BACKEND_SECRET,
       },
     })
     .then((res) => res.data)
@@ -285,7 +285,6 @@ export async function getServerSideProps(context) {
           domainsByCurrentUser.push(domain);
       });
 
-      // console.log(domains, context.query.domain);
       return domains.filter((domain) => domain.name === context.query.domain);
     })
     .then(async (info) => {
@@ -293,11 +292,11 @@ export async function getServerSideProps(context) {
       console.log(info);
       await axios
         .request({
-          method: "GET",
-          url: `http://localhost:5000/api/users/${info[0].user_id}`,
+          method: "POST",
+          url: `${process.env.BACKEND_URL}/api/users/${info[0].user_id}`,
           headers: { "Content-Type": "application/json" },
           data: {
-            secret: "q+pXtJSG#JDN37HsE@,",
+            secret: process.env.BACKEND_SECRET,
           },
         })
         .then((res) => res.data)
@@ -307,8 +306,6 @@ export async function getServerSideProps(context) {
         .catch((err) => console.log(err));
     })
     .catch((err) => console.log(err));
-
-  console.log("domainsByCurrentUser", domainsByCurrentUser);
 
   return {
     props: {

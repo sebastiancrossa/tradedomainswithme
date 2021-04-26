@@ -28,8 +28,6 @@ const User = ({ session, initialDomains, userInfo }) => {
   const [randNum, setRandNum] = useState(getRandomNumber(999999));
   const [isOpen, setIsOpen] = useState(false);
 
-  console.log("current session", session);
-
   // Domain-related state
   // ! this logic is ugly af, refactor once everything is working
   const [domains, setDomains] = useState(initialDomains);
@@ -64,10 +62,10 @@ const User = ({ session, initialDomains, userInfo }) => {
     let createdDomain = await axios
       .request({
         method: "POST",
-        url: "http://localhost:5000/api/domains/",
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains/`,
         headers: { "Content-Type": "application/json" },
         data: {
-          secret: "q+pXtJSG#JDN37HsE@,",
+          secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
           user_id: session.user_id,
           name: newDomain,
         },
@@ -84,10 +82,10 @@ const User = ({ session, initialDomains, userInfo }) => {
   const handleDomainVerify = async (domainName, domainId) => {
     const verifyPromise = axios.request({
       method: "PUT",
-      url: `http://localhost:5000/api/domains/verify/${domainId}`,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains/verify/${domainId}`,
       headers: { "Content-Type": "application/json" },
       data: {
-        secret: "q+pXtJSG#JDN37HsE@,",
+        secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
         randNum,
       },
     });
@@ -166,16 +164,21 @@ const User = ({ session, initialDomains, userInfo }) => {
             </p>
 
             <div className="unverified-domains">
-              {unverifiedDomains.map((domain) => (
-                <div className="unverified-domain">
-                  <p>{domain.name}</p>
-                  <button
-                    onClick={() => handleDomainVerify(domain.name, domain._id)}
-                  >
-                    Check verification
-                  </button>
-                </div>
-              ))}
+              {unverifiedDomains.map(
+                (domain) =>
+                  !domain.swappedWith && (
+                    <div className="unverified-domain">
+                      <p>{domain.name}</p>
+                      <button
+                        onClick={() =>
+                          handleDomainVerify(domain.name, domain._id)
+                        }
+                      >
+                        Check verification
+                      </button>
+                    </div>
+                  )
+              )}
             </div>
           </section>
         )}
@@ -262,14 +265,14 @@ export async function getServerSideProps(context) {
   const users = await axios
     .request({
       method: "GET",
-      url: "http://localhost:5000/api/users/",
+      url: `${process.env.BACKEND_URL}/api/users/`,
       headers: { "Content-Type": "application/json" },
       data: {
-        secret: "q+pXtJSG#JDN37HsE@,",
+        secret: process.env.BACKEND_SECRET,
       },
     })
     .then((res) => res.data)
-    .catch((err) => console.log(err));
+    .catch((err) => console.log("error while fetching user", err));
 
   const user = users.filter(
     (user) => user.user_name.toLowerCase() === context.query.user.toLowerCase()
@@ -278,10 +281,11 @@ export async function getServerSideProps(context) {
   // Fetch domains from user
   const domains = await axios
     .request({
-      method: "GET",
-      url: `http://localhost:5000/api/domains/${user[0].external_id}`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      url: `${process.env.BACKEND_URL}/api/domains/${user[0].external_id}`,
       data: {
-        secret: "q+pXtJSG#JDN37HsE@,",
+        secret: process.env.BACKEND_SECRET,
       },
     })
     .then((res) => res.data)

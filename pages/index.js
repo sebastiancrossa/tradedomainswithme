@@ -29,10 +29,10 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
     await axios
       .request({
         method: "POST",
-        url: "http://localhost:5000/api/domains/",
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains/`,
         headers: { "Content-Type": "application/json" },
         data: {
-          secret: "q+pXtJSG#JDN37HsE@,",
+          secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
           user_id: session.user_id,
           name: newDomain,
         },
@@ -86,7 +86,7 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
                 swappedDomains.map((swappedDomain) => (
                   <SwappedCard
                     domain={swappedDomain}
-                    user={swappedDomain.user.user}
+                    user={swappedDomain.user && swappedDomain.user.user}
                   />
                 ))}
             </div>
@@ -150,10 +150,10 @@ export async function getServerSideProps(context) {
     const users = await axios
       .request({
         method: "GET",
-        url: "http://localhost:5000/api/users/",
+        url: `${process.env.BACKEND_URL}/api/users/`,
         headers: { "Content-Type": "application/json" },
         data: {
-          secret: "q+pXtJSG#JDN37HsE@,",
+          secret: process.env.BACKEND_SECRET,
         },
       })
       .then((res) => res.data)
@@ -166,9 +166,9 @@ export async function getServerSideProps(context) {
   await axios
     .request({
       method: "GET",
-      url: `http://localhost:5000/api/domains/`,
+      url: `${process.env.BACKEND_URL}/api/domains/`,
       data: {
-        secret: "q+pXtJSG#JDN37HsE@,",
+        secret: process.env.BACKEND_SECRET,
       },
     })
     .then((res) => res.data)
@@ -194,10 +194,10 @@ export async function getServerSideProps(context) {
           swappedDomains.map(async (swappedDomain, index) => {
             await axios
               .request({
-                method: "GET",
-                url: `http://localhost:5000/api/users/${swappedDomain.user_id}`,
+                method: "POST",
+                url: `${process.env.BACKEND_URL}/api/users/${swappedDomain.user_id}`,
                 data: {
-                  secret: "q+pXtJSG#JDN37HsE@,",
+                  secret: process.env.BACKEND_SECRET,
                 },
               })
               .then((res) => res.data)
