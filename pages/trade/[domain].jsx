@@ -65,7 +65,7 @@ const Domain = ({
         {domainInfo && domainInfo.swappedWith ? (
           <div className="heading-info">
             <div>
-              {domainInfo.isVerified ? (
+              {domainInfo && domainInfo.isVerified ? (
                 <div className="tag verified">
                   <p>Verified</p>
                 </div>
@@ -100,7 +100,7 @@ const Domain = ({
             <h1 style={{ padding: "2rem 0" }}>swapped with</h1>
 
             <div>
-              {domainInfo.swappedWith.domain_verified ? (
+              {domainInfo && domainInfo.swappedWith.domain_verified ? (
                 <div className="tag verified">
                   <p>Verified</p>
                 </div>
