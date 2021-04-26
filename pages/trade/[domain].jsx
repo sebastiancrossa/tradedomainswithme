@@ -28,6 +28,7 @@ const Domain = ({
   const onCloseModal = () => setIsOpen(false);
 
   console.log(domainInfo);
+  console.log("userInfo", userInfo);
 
   const isMe = session ? session.user_id === domainOwner.external_id : false;
 
@@ -248,15 +249,15 @@ const Domain = ({
 export async function getServerSideProps(context) {
   const session = await getSession(context);
   let user = null;
-  let localDomainInfo;
-  let localDomainOwner;
+  let localDomainInfo = null;
+  let localDomainOwner = null;
   let domainsByCurrentUser = [];
 
   if (session) {
     // Fetch complete user info of logged in user
     const users = await axios
       .request({
-        method: "GET",
+        method: "POST",
         url: `${process.env.BACKEND_URL}/api/users/`,
         headers: { "Content-Type": "application/json" },
         data: {
@@ -267,12 +268,13 @@ export async function getServerSideProps(context) {
       .catch((err) => console.log(err));
 
     user = users.filter((user) => user.external_id === session.user_id);
+    console.log("user", user);
   }
 
   // Fetching id of the domain
   await axios
     .request({
-      method: "GET",
+      method: "POST",
       url: `${process.env.BACKEND_URL}/api/domains/`,
       headers: { "Content-Type": "application/json" },
       data: {
@@ -282,7 +284,7 @@ export async function getServerSideProps(context) {
     .then((res) => res.data)
     .then((domains) => {
       domains.map((domain) => {
-        if (domain.user_id === session.user_id)
+        if (domain.user_id === (session && session.user_id))
           domainsByCurrentUser.push(domain);
       });
 
@@ -290,7 +292,7 @@ export async function getServerSideProps(context) {
     })
     .then(async (info) => {
       localDomainInfo = info;
-      console.log(info);
+
       await axios
         .request({
           method: "POST",
