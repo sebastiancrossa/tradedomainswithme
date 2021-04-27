@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 import { BsArrowRightShort } from "react-icons/bs";
 
-const OfferCard = ({ domain }) => {
+const TradeCard = ({ domain }) => {
   const [userInfo, setUserInfo] = useState();
 
   // Getting the user ino for each card
@@ -59,8 +59,11 @@ const OfferCard = ({ domain }) => {
 
       <div class="trade-info">
         <p>
-          <span>{domain && domain.swapOffersReceived.length}</span> swap{" "}
-          {domain && domain.swapOffersReceived.length === 1
+          <span>
+            {domain.swapOffersReceived && domain.swapOffersReceived.length}
+          </span>{" "}
+          swap{" "}
+          {domain.swapOffersReceived && domain.swapOffersReceived.length === 1
             ? "offer"
             : "offers"}
         </p>
@@ -171,4 +174,4 @@ const Background = styled.div`
   }
 `;
 
-export default OfferCard;
+export default TradeCard;

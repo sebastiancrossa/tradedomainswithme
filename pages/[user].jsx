@@ -57,13 +57,15 @@ const User = ({ session, initialDomains, userInfo }) => {
     setUnswappedDomains(unswappedDomains);
   }, [domains]);
 
+  console.log(session);
+
   const handleDomainAdd = async () => {
     // Creating the new domain
     // TODO: Do some server side protection as well
     let createdDomain = await axios
       .request({
         method: "POST",
-        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains/`,
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains`,
         headers: { "Content-Type": "application/json" },
         data: {
           secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
@@ -100,6 +102,8 @@ const User = ({ session, initialDomains, userInfo }) => {
 
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
+
+  console.log("unswapped", unswappedDomains);
 
   return (
     <GALayout>
@@ -275,6 +279,8 @@ export async function getServerSideProps(context) {
     .then((res) => res.data)
     .catch((err) => console.log("error while fetching user", err));
 
+  console.log("users");
+
   const user = users.filter(
     (user) => user.user_name.toLowerCase() === context.query.user.toLowerCase()
   );
@@ -282,7 +288,7 @@ export async function getServerSideProps(context) {
   // Fetch domains from user
   const domains = await axios
     .request({
-      method: "POST",
+      method: "GET",
       headers: { "Content-Type": "application/json" },
       url: `${process.env.BACKEND_URL}/api/domains/${user[0].external_id}`,
       data: {

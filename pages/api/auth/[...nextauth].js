@@ -28,14 +28,11 @@ export default NextAuth({
         .then((res) => res.data)
         .catch((err) => console.log(err));
 
-      // console.log("users", users);
-      // console.log("session", session);
+      const user = users.filter((user) => user.email === session.user.email);
 
-      const user = users.filter(
-        (user) =>
-          user.display_name === session.user.name &&
-          user.profile_img === session.user.image
-      );
+      // console.log("users", users);
+      // console.log("user", user);
+      // console.log("session", session);
 
       if (user._id !== token.id) {
         fetch(`${process.env.BACKEND_URL}/api/users/${user[0]._id}`, {
