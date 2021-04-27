@@ -62,7 +62,6 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
         {/* <button onClick={() => signOut()}>Sign out</button> */}
 
         <section class="text-container">
-          <h1>tradedomainswith.me</h1>
           <h2 style={{ marginBottom: "1rem", fontWeight: "400" }}>
             The easiest way to find people to trade domains with.
           </h2>

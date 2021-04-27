@@ -7,7 +7,7 @@ const Navbar = ({ session, user, signIn, signOut }) => {
     <Background>
       <Link href="/" passHref>
         <a style={{ color: "black" }}>
-          <h1>tradedomainswithme</h1>
+          <h1>tradedomainswith.me</h1>
         </a>
       </Link>
       {!session && (
