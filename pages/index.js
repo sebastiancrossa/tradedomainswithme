@@ -152,7 +152,7 @@ export async function getServerSideProps(context) {
     const users = await axios
       .request({
         method: "GET",
-        url: `${process.env.BACKEND_URL}/api/users/`,
+        url: `${process.env.BACKEND_URL}/api/users`,
         headers: { "Content-Type": "application/json" },
         data: {
           secret: process.env.BACKEND_SECRET,
@@ -168,7 +168,7 @@ export async function getServerSideProps(context) {
   await axios
     .request({
       method: "GET",
-      url: `${process.env.BACKEND_URL}/api/domains/`,
+      url: `${process.env.BACKEND_URL}/api/domains`,
       data: {
         secret: process.env.BACKEND_SECRET,
       },

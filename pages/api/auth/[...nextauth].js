@@ -47,6 +47,9 @@ export default NextAuth({
           .catch((err) => console.log(err));
       }
 
+      console.log("session", session);
+      console.log("user", user);
+
       return session;
     },
     async signIn(user, account, profile) {
