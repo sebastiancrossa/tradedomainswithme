@@ -57,8 +57,6 @@ const User = ({ session, initialDomains, userInfo }) => {
     setUnswappedDomains(unswappedDomains);
   }, [domains]);
 
-  console.log(session);
-
   const handleDomainAdd = async () => {
     // Creating the new domain
     // TODO: Do some server side protection as well
@@ -276,8 +274,6 @@ export async function getServerSideProps(context) {
     })
     .then((res) => res.data)
     .catch((err) => console.log("error while fetching user", err));
-
-  console.log("users");
 
   const user = users.filter(
     (user) => user.user_name.toLowerCase() === context.query.user.toLowerCase()
