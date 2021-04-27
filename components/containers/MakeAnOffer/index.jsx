@@ -26,9 +26,11 @@ const MakeAnOffer = ({ domains, currentDomain }) => {
       .request({
         method: "PUT",
         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains/${currentDomain._id}/newOffer`,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
+        },
         data: {
-          secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
           offerDomainId: selectedDomain,
         },
       })

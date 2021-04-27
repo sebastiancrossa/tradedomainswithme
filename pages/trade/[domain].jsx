@@ -34,9 +34,8 @@ const Domain = ({
       .request({
         method: "DELETE",
         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains/${domainInfo._id}`,
-        headers: { "Content-Type": "application/json" },
-        data: {
-          secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
+        headers: {
+          Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
         },
       })
       .then((res) => res.data)
@@ -256,9 +255,8 @@ export async function getServerSideProps(context) {
       .request({
         method: "GET",
         url: `${process.env.BACKEND_URL}/api/users/`,
-        headers: { "Content-Type": "application/json" },
-        data: {
-          secret: process.env.BACKEND_SECRET,
+        headers: {
+          Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
         },
       })
       .then((res) => res.data)
@@ -272,9 +270,8 @@ export async function getServerSideProps(context) {
     .request({
       method: "GET",
       url: `${process.env.BACKEND_URL}/api/domains/`,
-      headers: { "Content-Type": "application/json" },
-      data: {
-        secret: process.env.BACKEND_SECRET,
+      headers: {
+        Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
       },
     })
     .then((res) => res.data)
@@ -293,9 +290,8 @@ export async function getServerSideProps(context) {
         .request({
           method: "POST",
           url: `${process.env.BACKEND_URL}/api/users/${info[0].user_id}`,
-          headers: { "Content-Type": "application/json" },
-          data: {
-            secret: process.env.BACKEND_SECRET,
+          headers: {
+            Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
           },
         })
         .then((res) => res.data)

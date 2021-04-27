@@ -64,9 +64,11 @@ const User = ({ session, initialDomains, userInfo }) => {
       .request({
         method: "POST",
         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains`,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
+        },
         data: {
-          secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
           user_id: session.user_id,
           name: newDomain,
         },
@@ -84,10 +86,8 @@ const User = ({ session, initialDomains, userInfo }) => {
     const verifyPromise = axios.request({
       method: "PUT",
       url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains/verify/${domainId}`,
-      headers: { "Content-Type": "application/json" },
-      data: {
-        secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
-        randNum,
+      headers: {
+        Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
       },
     });
 
@@ -267,9 +267,8 @@ export async function getServerSideProps(context) {
     .request({
       method: "GET",
       url: `${process.env.BACKEND_URL}/api/users/`,
-      headers: { "Content-Type": "application/json" },
-      data: {
-        secret: process.env.BACKEND_SECRET,
+      headers: {
+        Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
       },
     })
     .then((res) => res.data)
@@ -283,11 +282,10 @@ export async function getServerSideProps(context) {
   const domains = await axios
     .request({
       method: "GET",
-      headers: { "Content-Type": "application/json" },
-      url: `${process.env.BACKEND_URL}/api/domains/${user[0].external_id}`,
-      data: {
-        secret: process.env.BACKEND_SECRET,
+      headers: {
+        Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
       },
+      url: `${process.env.BACKEND_URL}/api/domains/${user[0].external_id}`,
     })
     .then((res) => res.data)
     .catch((err) => console.log(err));

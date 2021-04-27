@@ -20,9 +20,8 @@ export default NextAuth({
         .request({
           method: "GET",
           url: `${process.env.BACKEND_URL}/api/users/`,
-          headers: { "Content-Type": "application/json" },
-          data: {
-            secret: process.env.BACKEND_SECRET,
+          headers: {
+            Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
           },
         })
         .then((res) => res.data)
@@ -33,9 +32,11 @@ export default NextAuth({
       if (user._id !== token.id) {
         fetch(`${process.env.BACKEND_URL}/api/users/${user[0]._id}`, {
           method: "put",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
+          },
           body: JSON.stringify({
-            secret: process.env.BACKEND_SECRET,
             newId: token.id,
           }),
         })
@@ -53,9 +54,11 @@ export default NextAuth({
       // Create/login the user a user through the node server
       fetch(`${process.env.BACKEND_URL}/api/users`, {
         method: "post",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
+        },
         body: JSON.stringify({
-          secret: process.env.BACKEND_SECRET,
           id: user.id,
           email: user.email,
           display_name: profile.name,

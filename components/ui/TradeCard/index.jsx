@@ -14,9 +14,8 @@ const TradeCard = ({ domain }) => {
       .request({
         method: "POST",
         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${domain.user_id}`,
-        headers: { "Content-Type": "application/json" },
-        data: {
-          secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
+        headers: {
+          Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
         },
       })
       .then((res) => res.data)

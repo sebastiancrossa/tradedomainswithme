@@ -31,9 +31,11 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
       .request({
         method: "POST",
         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains`,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
+        },
         data: {
-          secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
           user_id: session.user_id,
           name: newDomain,
         },
@@ -151,9 +153,9 @@ export async function getServerSideProps(context) {
       .request({
         method: "GET",
         url: `${process.env.BACKEND_URL}/api/users`,
-        headers: { "Content-Type": "application/json" },
-        data: {
-          secret: process.env.BACKEND_SECRET,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
         },
       })
       .then((res) => res.data)
@@ -167,8 +169,8 @@ export async function getServerSideProps(context) {
     .request({
       method: "GET",
       url: `${process.env.BACKEND_URL}/api/domains`,
-      data: {
-        secret: process.env.BACKEND_SECRET,
+      headers: {
+        Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
       },
     })
     .then((res) => res.data)
@@ -196,8 +198,8 @@ export async function getServerSideProps(context) {
               .request({
                 method: "POST",
                 url: `${process.env.BACKEND_URL}/api/users/${swappedDomain.user_id}`,
-                data: {
-                  secret: process.env.BACKEND_SECRET,
+                headers: {
+                  Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
                 },
               })
               .then((res) => res.data)

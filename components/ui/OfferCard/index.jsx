@@ -18,8 +18,8 @@ const OfferCard = ({ isMe, userImg, userName, domainId, parentDomainId }) => {
       .request({
         method: "GET",
         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains/`,
-        data: {
-          secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
+        headers: {
+          Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
         },
       })
       .then((res) => res.data)
@@ -36,9 +36,11 @@ const OfferCard = ({ isMe, userImg, userName, domainId, parentDomainId }) => {
       .request({
         method: "PUT",
         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains/swap/${parentDomainId}`,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
+        },
         data: {
-          secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
           swapWithDomainId: domainId,
         },
       })
@@ -46,6 +48,7 @@ const OfferCard = ({ isMe, userImg, userName, domainId, parentDomainId }) => {
       .then(() => router.reload())
       .catch((err) => console.log(err));
 
+    router.reload();
     setIsOpen(false);
   };
 
