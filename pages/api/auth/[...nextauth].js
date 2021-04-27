@@ -30,10 +30,6 @@ export default NextAuth({
 
       const user = users.filter((user) => user.email === session.user.email);
 
-      // console.log("users", users);
-      // console.log("user", user);
-      // console.log("session", session);
-
       if (user._id !== token.id) {
         fetch(`${process.env.BACKEND_URL}/api/users/${user[0]._id}`, {
           method: "put",
@@ -46,9 +42,6 @@ export default NextAuth({
           .then((res) => res.json())
           .catch((err) => console.log(err));
       }
-
-      console.log("session", session);
-      console.log("user", user);
 
       return session;
     },

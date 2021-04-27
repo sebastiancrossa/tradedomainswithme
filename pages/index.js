@@ -24,8 +24,6 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
 
-  console.log(session);
-
   const handleDomainSubmit = async () => {
     // Creating the new domain
     // TODO: Do some server side protection as well

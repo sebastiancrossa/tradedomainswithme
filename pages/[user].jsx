@@ -103,8 +103,6 @@ const User = ({ session, initialDomains, userInfo }) => {
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
 
-  console.log("unswapped", unswappedDomains);
-
   return (
     <GALayout>
       <Head>

@@ -27,9 +27,6 @@ const Domain = ({
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
 
-  console.log(domainInfo);
-  console.log("userInfo", userInfo);
-
   const isMe = session ? session.user_id === domainOwner.external_id : false;
 
   const handleDomainDelete = async () => {
@@ -268,7 +265,6 @@ export async function getServerSideProps(context) {
       .catch((err) => console.log(err));
 
     user = users.filter((user) => user.external_id === session.user_id);
-    console.log("user", user);
   }
 
   // Fetching id of the domain
