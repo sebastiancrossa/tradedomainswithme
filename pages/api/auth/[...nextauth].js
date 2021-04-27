@@ -18,7 +18,7 @@ export default NextAuth({
       // the domain
       const users = await axios
         .request({
-          method: "post",
+          method: "GET",
           url: `${process.env.BACKEND_URL}/api/users/`,
           headers: { "Content-Type": "application/json" },
           data: {
