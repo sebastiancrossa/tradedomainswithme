@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "bcrypt": "^5.0.1",
     "domain-verification": "^1.0.5",
     "is-valid-domain": "^0.0.19",
     "isomorphic-fetch": "^3.0.0",

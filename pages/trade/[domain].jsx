@@ -257,7 +257,7 @@ export async function getServerSideProps(context) {
     // Fetch complete user info of logged in user
     const users = await axios
       .request({
-        method: "POST",
+        method: "GET",
         url: `${process.env.BACKEND_URL}/api/users/`,
         headers: { "Content-Type": "application/json" },
         data: {
@@ -274,7 +274,7 @@ export async function getServerSideProps(context) {
   // Fetching id of the domain
   await axios
     .request({
-      method: "POST",
+      method: "GET",
       url: `${process.env.BACKEND_URL}/api/domains/`,
       headers: { "Content-Type": "application/json" },
       data: {

@@ -24,13 +24,15 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
 
+  console.log(session);
+
   const handleDomainSubmit = async () => {
     // Creating the new domain
     // TODO: Do some server side protection as well
     await axios
       .request({
         method: "POST",
-        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains/`,
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domains`,
         headers: { "Content-Type": "application/json" },
         data: {
           secret: process.env.NEXT_PUBLIC_BACKEND_SECRET,
@@ -145,14 +147,12 @@ export async function getServerSideProps(context) {
   let unswappedDomains = [];
   let user = null;
 
-  console.log("session from index", session);
-
   if (session) {
     // Fetch complete user info of logged in user
     const users = await axios
       .request({
         method: "GET",
-        url: `${process.env.BACKEND_URL}/api/users/`,
+        url: `${process.env.BACKEND_URL}/api/users`,
         headers: { "Content-Type": "application/json" },
         data: {
           secret: process.env.BACKEND_SECRET,
@@ -167,8 +167,8 @@ export async function getServerSideProps(context) {
   // Fetch all domains from user
   await axios
     .request({
-      method: "POST",
-      url: `${process.env.BACKEND_URL}/api/domains/`,
+      method: "GET",
+      url: `${process.env.BACKEND_URL}/api/domains`,
       data: {
         secret: process.env.BACKEND_SECRET,
       },
