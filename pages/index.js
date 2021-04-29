@@ -221,6 +221,15 @@ export async function getServerSideProps(context) {
     })
     .catch((err) => console.log(err));
 
+  // Have the verified unswapped domains be at the front
+  let verifiedDomains = unswappedDomains.filter(
+    (domain) => domain.isVerified === true
+  );
+  let unverifiedDomains = unswappedDomains.filter(
+    (domain) => domain.isVerified === false
+  );
+  unswappedDomains = [...verifiedDomains, ...unverifiedDomains];
+
   return {
     props: {
       session,
