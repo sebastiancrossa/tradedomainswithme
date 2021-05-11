@@ -47,10 +47,6 @@ export default NextAuth({
       return session;
     },
     async signIn(user, account, profile) {
-      // console.log("user from signIn", user);
-      // console.log("account from signIn", account);
-      // console.log("profile from signIn", account);
-
       // Create/login the user a user through the node server
       fetch(`${process.env.BACKEND_URL}/api/users`, {
         method: "post",
@@ -67,21 +63,7 @@ export default NextAuth({
         }),
       })
         .then((res) => res.json())
-        .then(async (data) => {
-          // console.log("logged user", data);
-          // if (data._id !== user.id) {
-          //   await fetch(`${process.env.BACKEND_URL}/api/users/${data._id}`, {
-          //     method: "put",
-          //     headers: { "Content-Type": "application/json" },
-          //     body: JSON.stringify({
-          //       secret: process.env.BACKEND_SECRET,
-          //       newId: user.id,
-          //     }),
-          //   })
-          //     .then((res) => res.json())
-          //     .catch((err) => console.log(err));
-          // }
-        })
+
         .catch((err) => console.log(err));
 
       return true;
