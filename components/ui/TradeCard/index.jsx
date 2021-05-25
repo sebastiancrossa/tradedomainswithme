@@ -28,6 +28,8 @@ const TradeCard = ({ domain }) => {
     fetchUserInfo();
   }, []);
 
+  console.log(userInfo && userInfo.profile_img);
+
   return (
     <Background>
       <Link href={`/${userInfo && userInfo.user_name}`} passHref>
@@ -39,7 +41,7 @@ const TradeCard = ({ domain }) => {
                   ? userInfo.profile_img
                   : "https://st3.depositphotos.com/1767687/16607/v/380/depositphotos_166074422-stock-illustration-default-avatar-profile-icon-grey.jpg"
               }
-              alt="User profile image"
+              loading="lazy"
             />
             <p>@{userInfo && userInfo.user_name} wants to trade</p>
           </div>

@@ -232,7 +232,7 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      session,
+      session: session ? session : null,
       domains: unswappedDomains,
       swappedDomains,
       userInfo: session ? user[0] : null,
