@@ -31,7 +31,7 @@ function MyApp({ Component, pageProps }) {
           content="https://res.cloudinary.com/kisana/image/upload/v1619462650/tradedomainswithme-pic.jpg"
         />
         <meta
-          itemprop="image"
+          itemProp="image"
           content="https://res.cloudinary.com/kisana/image/upload/v1619462650/tradedomainswithme-pic.jpg"
         />
       </Head>

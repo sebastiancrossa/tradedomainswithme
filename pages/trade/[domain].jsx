@@ -224,7 +224,7 @@ const Domain = ({
               the domain back in the future if you ever change your mind.
             </p>
 
-            <div class="buttons">
+            <div className="buttons">
               <button
                 className="remove-btn"
                 onClick={() => handleDomainDelete()}

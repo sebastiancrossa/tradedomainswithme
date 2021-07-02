@@ -20,7 +20,20 @@ const TradeCard = ({ domain }) => {
       })
       .then((res) => res.data)
       // .then((data) => console.log("data", data[0]))
-      .then((user) => user[0] && setUserInfo(user[0]))
+      .then((user) => {
+        let selectedUser = user[0];
+
+        if (selectedUser) {
+          // check if the img has a response status of anything but 4xx
+          // if it does, delete it from object
+          const imgReq = new Request(selectedUser.profile_img);
+          fetch(imgReq)
+            .then(
+              (res) => res.status === 404 && delete selectedUser.profile_img
+            )
+            .finally(() => setUserInfo(selectedUser));
+        }
+      })
       .catch((err) => console.log("error fetching user", err));
   };
 
@@ -28,7 +41,8 @@ const TradeCard = ({ domain }) => {
     fetchUserInfo();
   }, []);
 
-  console.log(userInfo && userInfo.profile_img);
+  const placeholderImg =
+    "https://st3.depositphotos.com/1767687/16607/v/380/depositphotos_166074422-stock-illustration-default-avatar-profile-icon-grey.jpg";
 
   return (
     <Background>
@@ -37,9 +51,9 @@ const TradeCard = ({ domain }) => {
           <div className="user-info">
             <img
               src={
-                userInfo
+                userInfo && userInfo.profile_img
                   ? userInfo.profile_img
-                  : "https://st3.depositphotos.com/1767687/16607/v/380/depositphotos_166074422-stock-illustration-default-avatar-profile-icon-grey.jpg"
+                  : placeholderImg
               }
               loading="lazy"
             />
@@ -58,7 +72,7 @@ const TradeCard = ({ domain }) => {
         <p>{domain && domain.name}</p>
       </div>
 
-      <div class="trade-info">
+      <div className="trade-info">
         <p>
           <span>
             {domain.swapOffersReceived && domain.swapOffersReceived.length}

@@ -139,8 +139,8 @@ const User = ({ session, initialDomains, userInfo }) => {
         )}
 
         <div className="user-stats">
-          <div class="open">{unswappedDomains.length} open swap offers</div>
-          <div class="traded">{swappedDomains.length} domains swaped</div>
+          <div className="open">{unswappedDomains.length} open swap offers</div>
+          <div className="traded">{swappedDomains.length} domains swaped</div>
         </div>
 
         {isMe && unverifiedDomains.length > 0 && (
