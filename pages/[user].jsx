@@ -41,6 +41,13 @@ const User = ({ session, initialDomains, userInfo }) => {
 
   const isMe = session ? session.user_id === userInfo.external_id : false;
 
+  // useEffect(() => {
+  //   const imgReq = new Request(userInfo.profile_img);
+  //   fetch(imgReq).then(
+  //     (res) => res.status === 404 && delete userInfo.profile_img
+  //   );
+  // }, []);
+
   useEffect(() => {
     let verifiedDomains = domains.filter(
       (domain) => domain.isVerified === true
@@ -101,6 +108,10 @@ const User = ({ session, initialDomains, userInfo }) => {
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
 
+  // ! refactor this asap, as it's repeated in the tradecard component too
+  const placeholderImg =
+    "https://st3.depositphotos.com/1767687/16607/v/380/depositphotos_166074422-stock-illustration-default-avatar-profile-icon-grey.jpg";
+
   return (
     <GALayout>
       <Head>
@@ -119,7 +130,7 @@ const User = ({ session, initialDomains, userInfo }) => {
         <div className="user-container">
           <div>
             <img
-              src={userInfo.profile_img}
+              src={userInfo.profile_img ? userInfo.profile_img : placeholderImg}
               alt={`Profile picture for ${userInfo.display_name} (@${userInfo.user_name})`}
             />
             <h1>{userInfo.display_name}</h1>
@@ -289,6 +300,16 @@ export async function getServerSideProps(context) {
     })
     .then((res) => res.data)
     .catch((err) => console.log(err));
+
+  // check if the img has a response status of anything but 4xx
+  // if it does, delete it from object
+  // (make sure we already have user available to us)
+  if (user) {
+    const imgReq = new Request(user[0].profile_img);
+    await fetch(imgReq).then(
+      (res) => res.status === 404 && delete user[0].profile_img
+    );
+  }
 
   return {
     props: {
