@@ -4,13 +4,13 @@ import { useRouter } from "next/router";
 import { signIn, signOut, getSession } from "next-auth/client";
 import Head from "next/head";
 import axios from "axios";
-import styled from "styled-components";
+
 import ReactModal from "react-modal";
 import toast from "react-hot-toast";
 
 // Component imports
 import GALayout from "../components/layout/GALayout";
-import { Container } from "../styles";
+import { ModalContainer, StyledContainer } from "../styles/pages/user.style";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import TradeCard from "../components/ui/TradeCard";
@@ -40,6 +40,13 @@ const User = ({ session, initialDomains, userInfo }) => {
   // ----
 
   const isMe = session ? session.user_id === userInfo.external_id : false;
+
+  // useEffect(() => {
+  //   const imgReq = new Request(userInfo.profile_img);
+  //   fetch(imgReq).then(
+  //     (res) => res.status === 404 && delete userInfo.profile_img
+  //   );
+  // }, []);
 
   useEffect(() => {
     let verifiedDomains = domains.filter(
@@ -101,6 +108,10 @@ const User = ({ session, initialDomains, userInfo }) => {
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
 
+  // ! refactor this asap, as it's repeated in the tradecard component too
+  const placeholderImg =
+    "https://st3.depositphotos.com/1767687/16607/v/380/depositphotos_166074422-stock-illustration-default-avatar-profile-icon-grey.jpg";
+
   return (
     <GALayout>
       <Head>
@@ -119,7 +130,7 @@ const User = ({ session, initialDomains, userInfo }) => {
         <div className="user-container">
           <div>
             <img
-              src={userInfo.profile_img}
+              src={userInfo.profile_img ? userInfo.profile_img : placeholderImg}
               alt={`Profile picture for ${userInfo.display_name} (@${userInfo.user_name})`}
             />
             <h1>{userInfo.display_name}</h1>
@@ -290,6 +301,16 @@ export async function getServerSideProps(context) {
     .then((res) => res.data)
     .catch((err) => console.log(err));
 
+  // check if the img has a response status of anything but 4xx
+  // if it does, delete it from object
+  // (make sure we already have user available to us)
+  if (user) {
+    const imgReq = new Request(user[0].profile_img);
+    await fetch(imgReq).then(
+      (res) => res.status === 404 && delete user[0].profile_img
+    );
+  }
+
   return {
     props: {
       session,
@@ -298,138 +319,5 @@ export async function getServerSideProps(context) {
     },
   };
 }
-
-const ModalContainer = styled.div`
-  input {
-    padding: 0.5rem;
-    width: 100%;
-    border: none;
-    border-bottom: 2px solid #f9f8f4;
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-    border-radius: 5px;
-
-    text-align: center;
-  }
-
-  button {
-    width: 100%;
-    padding: 0.5rem;
-
-    transition: all 0.15s ease-in;
-
-    &:disabled {
-      background-color: #0c0066;
-    }
-  }
-`;
-
-const StyledContainer = styled(Container)`
-  .code {
-    background-color: #f9f8f4;
-    padding: 0 0.3rem;
-    margin-left: 0.3rem;
-    font-weight: bold;
-  }
-
-  .unverified-domains {
-    display: flex;
-    text-align: center;
-    flex-wrap: wrap;
-
-    button {
-      padding: 0.5rem;
-      width: 100%;
-      margin-top: 0.5rem;
-    }
-  }
-
-  .unverified-domain {
-    margin: 0 1rem 1rem 0;
-
-    padding: 1rem;
-    border-radius: 5px;
-    background-color: #f9f8f4;
-    width: fit-content;
-  }
-
-  .user-container {
-    margin: 6rem 0 2rem 0;
-    text-align: center;
-
-    a {
-      font-size: 1.2rem;
-      color: black;
-    }
-
-    img {
-      width: 8rem;
-      height: auto;
-      border-radius: 50rem;
-
-      margin-bottom: 1rem;
-    }
-  }
-
-  section {
-    margin-bottom: 2rem;
-
-    h2 {
-      margin-bottom: 1rem;
-    }
-  }
-
-  .add-btn,
-  .signout-btn {
-    width: 30rem;
-    margin: 0 auto 1rem auto;
-    display: block;
-  }
-
-  .signout-btn {
-    margin-bottom: 3rem;
-    background-color: #ec6559;
-  }
-
-  .user-stats {
-    margin: 0 auto 1rem auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 1rem;
-
-    max-width: 30rem;
-
-    @media only screen and (max-width: 375px) {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .traded,
-  .open {
-    background-color: #f9f8f4;
-    padding: 1rem;
-
-    border-radius: 5px;
-    text-align: center;
-    font-size: 1rem;
-    font-weight: 600;
-  }
-
-  /* ! Abstract this styling, given that it's more than repeated */
-  .offers-list,
-  .swapped-list {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-gap: 3rem;
-
-    @media only screen and (max-width: 1024px) {
-      grid-template-columns: 1fr 1fr;
-    }
-
-    @media only screen and (max-width: 425px) {
-      grid-template-columns: 1fr;
-    }
-  }
-`;
 
 export default User;
