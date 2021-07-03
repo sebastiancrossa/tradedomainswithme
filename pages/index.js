@@ -1,18 +1,20 @@
+// Libraries
 import { signIn, signOut, getSession } from "next-auth/client";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import Head from "next/head";
 import ReactModal from "react-modal";
-import styled from "styled-components";
 
 // Component imports
 import GALayout from "../components/layout/GALayout";
-import { Container } from "../styles";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import SwapsList from "../components/containers/SwapsList";
 import SwappedCard from "../components/ui/SwappedCard";
+
+// Styles
+import { ModalContainer, StyledContainer } from "../styles/pages/index.style";
 
 const isValidDomain = require("is-valid-domain");
 
@@ -239,57 +241,3 @@ export async function getServerSideProps(context) {
     },
   };
 }
-
-const ModalContainer = styled.div`
-  input {
-    padding: 0.5rem;
-    width: 100%;
-    border: none;
-    border-bottom: 2px solid #f9f8f4;
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-
-    text-align: center;
-  }
-
-  button {
-    width: 100%;
-    padding: 0.5rem;
-
-    transition: all 0.15s ease-in;
-
-    &:disabled {
-      background-color: #0c0066;
-    }
-  }
-`;
-
-const StyledContainer = styled(Container)`
-  .text-container {
-    h1 {
-      font-size: 1.6rem;
-    }
-
-    background-color: #f9f8f4;
-    text-align: center;
-
-    margin: 2rem 0;
-
-    padding: 2rem;
-    border-radius: 10px;
-  }
-
-  .swapped-list {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-gap: 3rem;
-
-    @media only screen and (max-width: 1024px) {
-      grid-template-columns: 1fr 1fr;
-    }
-
-    @media only screen and (max-width: 425px) {
-      grid-template-columns: 1fr;
-    }
-  }
-`;
