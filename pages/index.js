@@ -53,6 +53,33 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
     <GALayout>
       <Head>
         <title>tradedomainswith.me</title>
+
+        <meta property="og:url" content="https://tradedomainswith.me" />
+        <meta
+          name="description"
+          content="Find people to trade your unwanted domains with."
+        />
+        <meta
+          property="og:description"
+          content="Find people to trade your unwanted domains with."
+        />
+        <meta
+          itemProp="description"
+          content="Find people to trade your unwanted domains with."
+        />
+
+        {/* Twitter meta tags */}
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="tradedomainswith.me" />
+        <meta
+          name="twitter:description"
+          content="Find people to trade your unwanted domains with."
+        />
+        <meta
+          name="twitter:image"
+          content="https://res.cloudinary.com/kisana/image/upload/v1619462650/tradedomainswithme-pic.jpg"
+        />
+
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

@@ -26,6 +26,8 @@ function MyApp({ Component, pageProps }) {
         />
         <link rel="stylesheet" type="text/css" href="/nprogress.css" />
 
+        <meta property="og:type" content="website" />
+
         <meta
           property="og:image"
           content="https://res.cloudinary.com/kisana/image/upload/v1619462650/tradedomainswithme-pic.jpg"
