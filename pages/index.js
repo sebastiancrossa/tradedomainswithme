@@ -80,7 +80,7 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
           content="https://res.cloudinary.com/kisana/image/upload/v1619462650/tradedomainswithme-pic.jpg"
         />
 
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" />
       </Head>
 
       <StyledContainer>
