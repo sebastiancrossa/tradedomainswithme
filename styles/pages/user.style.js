@@ -60,6 +60,12 @@ export const StyledContainer = styled(Container)`
     text-align: center;
 
     a {
+      display: flex;
+
+      width: fit-content;
+      margin: 0 auto;
+
+      text-align: center;
       font-size: 1.2rem;
       color: black;
     }

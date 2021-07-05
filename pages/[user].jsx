@@ -15,6 +15,7 @@ import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import TradeCard from "../components/ui/TradeCard";
 import SwappedCard from "../components/ui/SwappedCard";
+import { AiOutlineTwitter } from "react-icons/ai";
 
 const isValidDomain = require("is-valid-domain");
 
@@ -138,7 +139,12 @@ const User = ({ session, initialDomains, userInfo }) => {
               href={`https://twitter.com/${userInfo.user_name}`}
               target="_blank"
             >
-              @{userInfo.user_name}
+              <AiOutlineTwitter
+                size={25}
+                color="#2b99e6"
+                style={{ marginRight: "0.3rem" }}
+              />
+              <p>@{userInfo.user_name}</p>
             </a>
           </div>
         </div>
