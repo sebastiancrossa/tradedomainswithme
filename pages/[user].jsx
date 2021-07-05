@@ -120,7 +120,6 @@ const User = ({ session, initialDomains, userInfo }) => {
     <GALayout>
       <Head>
         <title>{router.query.user} | tradedomainswith.me</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <StyledContainer>

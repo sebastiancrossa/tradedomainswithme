@@ -51,7 +51,6 @@ const Domain = ({
     <GALayout>
       <Head>
         <title>Swap potentialfor.business</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <StyledContainer>
