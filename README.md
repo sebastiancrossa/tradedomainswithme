@@ -1,4 +1,4 @@
-![Product banner](https://res.cloudinary.com/kisana/image/upload/c_scale,w_1540/v1625481076/td-ph-1_relkmk.png)
+![Product banner](https://res.cloudinary.com/kisana/image/upload/c_scale,w_848/v1625481076/td-ph-1_relkmk.png)
 
 # tradedomainswith.me
 
