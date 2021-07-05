@@ -97,6 +97,9 @@ const User = ({ session, initialDomains, userInfo }) => {
       headers: {
         Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
       },
+      data: {
+        randNum,
+      },
     });
 
     toast.promise(verifyPromise, {
@@ -179,6 +182,18 @@ const User = ({ session, initialDomains, userInfo }) => {
               (e.g. tradedomainswithme-999000-potentialfor.business). Once that
               is added, keep refreshing until we are able to verify that you are
               the owner of that domain!
+            </p>
+            <p style={{ marginBottom: "1rem" }}>
+              Note: This usually takes some time, but if it's not working after
+              a couple of minutes feel free to{" "}
+              <a
+                href="https://twitter.com/SebastianCrossa"
+                target="_blank"
+                style={{ textDecoration: "underline" }}
+              >
+                send me a DM
+              </a>{" "}
+              and I will verify the domain manually.
             </p>
 
             <div className="unverified-domains">
