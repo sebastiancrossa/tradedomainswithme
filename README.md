@@ -1,7 +1,7 @@
 <div align="center">
   <br>
   <img
-  src="https://res.cloudinary.com/kisana/image/upload/v1625500247/td-gh-banner_anuams.png"
+  src="https://res.cloudinary.com/kisana/image/upload/c_scale,w_529/v1625500247/td-gh-banner_anuams.png"
   />
 </div>
 
