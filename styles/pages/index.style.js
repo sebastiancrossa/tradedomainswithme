@@ -34,7 +34,7 @@ export const StyledContainer = styled(Container)`
     background-color: #f9f8f4;
     text-align: center;
 
-    margin: 2rem 0;
+    margin: 1rem 0 2rem 0;
 
     padding: 2rem;
     border-radius: 10px;

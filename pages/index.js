@@ -11,6 +11,7 @@ import GALayout from "../components/layout/GALayout";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import SwapsList from "../components/containers/SwapsList";
+import Banner from "../components/ui/Banner";
 import SwappedCard from "../components/ui/SwappedCard";
 
 // Styles
@@ -90,7 +91,8 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
           signIn={signIn}
           signOut={signOut}
         />
-        {/* <button onClick={() => signOut()}>Sign out</button> */}
+
+        <Banner />
 
         <section className="text-container">
           <h2 style={{ marginBottom: "1rem", fontWeight: "400" }}>
