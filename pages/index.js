@@ -57,15 +57,15 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
         <meta property="og:url" content="https://tradedomainswith.me" />
         <meta
           name="description"
-          content="Find people to trade your unwanted domains with."
+          content="The easiest way to find people to trade your unused domains with."
         />
         <meta
           property="og:description"
-          content="Find people to trade your unwanted domains with."
+          content="The easiest way to find people to trade your unused domains with."
         />
         <meta
           itemProp="description"
-          content="Find people to trade your unwanted domains with."
+          content="The easiest way to find people to trade your unused domains with."
         />
 
         {/* Twitter meta tags */}
@@ -73,7 +73,7 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
         <meta name="twitter:title" content="tradedomainswith.me" />
         <meta
           name="twitter:description"
-          content="Find people to trade your unwanted domains with."
+          content="The easiest way to find people to trade your unused domains with."
         />
         <meta
           name="twitter:image"
@@ -94,7 +94,7 @@ export default function Home({ session, domains, swappedDomains, userInfo }) {
 
         <section className="text-container">
           <h2 style={{ marginBottom: "1rem", fontWeight: "400" }}>
-            The easiest way to find people to trade domains with.
+            The easiest way to find people to trade your unused domains with
           </h2>
 
           {session ? (
@@ -262,7 +262,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       session: session ? session : null,
-      domains: unswappedDomains,
+      domains: unswappedDomains.slice(0, 9),
       swappedDomains,
       userInfo: session ? user[0] : null,
     },
