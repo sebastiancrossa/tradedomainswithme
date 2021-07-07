@@ -25,7 +25,7 @@ const getRandomNumber = (max) => {
   return Math.floor(Math.random() * max);
 };
 
-const User = ({ session, initialDomains, userInfo }) => {
+const User = ({ session, initialDomains, userInfo, loggedInUser }) => {
   const router = useRouter();
   const [randNum, setRandNum] = useState(getRandomNumber(999999));
   const [isOpen, setIsOpen] = useState(false);
@@ -41,13 +41,6 @@ const User = ({ session, initialDomains, userInfo }) => {
   // ----
 
   const isMe = session ? session.user_id === userInfo.external_id : false;
-
-  // useEffect(() => {
-  //   const imgReq = new Request(userInfo.profile_img);
-  //   fetch(imgReq).then(
-  //     (res) => res.status === 404 && delete userInfo.profile_img
-  //   );
-  // }, []);
 
   useEffect(() => {
     let verifiedDomains = domains.filter(
@@ -112,6 +105,9 @@ const User = ({ session, initialDomains, userInfo }) => {
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
 
+  console.log("userInfo", userInfo);
+  console.log("loggedInUser", loggedInUser);
+
   // ! refactor this asap, as it's repeated in the tradecard component too
   const placeholderImg =
     "https://st3.depositphotos.com/1767687/16607/v/380/depositphotos_166074422-stock-illustration-default-avatar-profile-icon-grey.jpg";
@@ -125,7 +121,7 @@ const User = ({ session, initialDomains, userInfo }) => {
       <StyledContainer>
         <Navbar
           session={session}
-          user={userInfo && userInfo.user_name}
+          user={loggedInUser && loggedInUser.user_name}
           signIn={signIn}
           signOut={signOut}
         />
@@ -292,6 +288,23 @@ const User = ({ session, initialDomains, userInfo }) => {
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);
+  let loggedInUser = null;
+
+  if (session) {
+    // Fetch complete user info of logged in user
+    const users = await axios
+      .request({
+        method: "GET",
+        url: `${process.env.BACKEND_URL}/api/users/`,
+        headers: {
+          Authorization: process.env.NEXT_PUBLIC_BACKEND_SECRET,
+        },
+      })
+      .then((res) => res.data)
+      .catch((err) => console.log(err));
+
+    loggedInUser = users.filter((user) => user.external_id === session.user_id);
+  }
 
   // Fetch complete user info
   const users = await axios
@@ -336,6 +349,7 @@ export async function getServerSideProps(context) {
       session,
       initialDomains: domains,
       userInfo: user[0],
+      loggedInUser: loggedInUser[0],
     },
   };
 }
