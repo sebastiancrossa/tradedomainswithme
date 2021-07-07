@@ -105,9 +105,6 @@ const User = ({ session, initialDomains, userInfo, loggedInUser }) => {
   const onOpenModal = () => setIsOpen(true);
   const onCloseModal = () => setIsOpen(false);
 
-  console.log("userInfo", userInfo);
-  console.log("loggedInUser", loggedInUser);
-
   // ! refactor this asap, as it's repeated in the tradecard component too
   const placeholderImg =
     "https://st3.depositphotos.com/1767687/16607/v/380/depositphotos_166074422-stock-illustration-default-avatar-profile-icon-grey.jpg";
@@ -349,7 +346,7 @@ export async function getServerSideProps(context) {
       session,
       initialDomains: domains,
       userInfo: user[0],
-      loggedInUser: loggedInUser[0],
+      loggedInUser: session ? loggedInUser[0] : null,
     },
   };
 }
